@@ -17,50 +17,10 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChefHat, Plus } from "lucide-react";
-import { useGetUserRecipes } from "@/endpoints/recipe";
+import { useGetRecipes, useGetUserRecipes } from "@/endpoints/recipe";
 interface Recipe {
   recipe_string: string;
 }
-
-interface RecipeOption {
-  id: string;
-  title: string;
-  description: string;
-}
-
-const recipeOptions: RecipeOption[] = [
-  {
-    id: "opt1",
-    title: "Chickpea Curry",
-    description: "A hearty vegetarian curry that's simple to make.",
-  },
-  {
-    id: "opt2",
-    title: "Quinoa Stuffed Peppers",
-    description: "Colorful bell peppers stuffed with quinoa and vegetables.",
-  },
-  {
-    id: "opt3",
-    title: "Lemon Garlic Roasted Chicken",
-    description: "A simple and flavorful roasted chicken dish.",
-  },
-  {
-    id: "opt4",
-    title: "Berry Smoothie Bowl",
-    description: "A nutritious and colorful breakfast bowl.",
-  },
-  {
-    id: "opt5",
-    title: "Mushroom Risotto",
-    description: "A creamy and rich Italian rice dish.",
-  },
-];
-
-const generateRecipeFromOption = (option: RecipeOption): Recipe => {
-  return {
-    recipe_string: `${option.title}\n\n${option.description}\n\nIngredients:\n- Ingredient 1\n- Ingredient 2\n- Ingredient 3\n- Ingredient 4\n- Ingredient 5\n\nInstructions:\n1. Step one of the recipe instructions.\n2. Step two with more details about cooking.\n3. Step three with additional information.\n4. Final step with serving suggestions.`,
-  };
-};
 
 function AddRecipeDialog({
   isOpen,
@@ -71,9 +31,10 @@ function AddRecipeDialog({
   onClose: () => void;
   onAddRecipe: (recipe: Recipe) => void;
 }) {
-  const handleSelectOption = (option: RecipeOption) => {
-    const newRecipe = generateRecipeFromOption(option);
-    onAddRecipe(newRecipe);
+  const { data: recipeStrings, isLoading } = useGetRecipes();
+
+  const handleSelectRecipe = (recipeString: string) => {
+    onAddRecipe({ recipe_string: recipeString });
     onClose();
   };
 
@@ -87,22 +48,33 @@ function AddRecipeDialog({
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[400px] pr-4">
-          <div className="space-y-4 pt-2">
-            {recipeOptions.map((option) => (
-              <Card
-                key={option.id}
-                className="cursor-pointer hover:border-primary transition-colors duration-200"
-                onClick={() => handleSelectOption(option)}
-              >
-                <CardHeader className="pb-2">
-                  <CardTitle>{option.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {option.description}
-                  </p>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <span className="text-muted-foreground">Loading recipes...</span>
+            </div>
+          ) : (
+            <div className="space-y-4 pt-2">
+              {recipeStrings?.map((recipeString, index) => {
+                const [title, ...description] = recipeString.split("\n");
+                return (
+                  <Card
+                    key={index}
+                    className="cursor-pointer hover:border-primary transition-colors duration-200"
+                    onClick={() => handleSelectRecipe(recipeString)}
+                  >
+                    <CardHeader className="pb-2">
+                      <CardTitle>{title}</CardTitle>
+                      {description.length > 0 && (
+                        <p className="text-sm text-muted-foreground">
+                          {description.join("\n")}
+                        </p>
+                      )}
+                    </CardHeader>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </ScrollArea>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
@@ -187,7 +159,7 @@ export default function RecipesPage() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
-  const { data: recipes } = useGetUserRecipes(); // isLoading would be nice
+  const { data: recipes } = useGetUserRecipes();
 
   const handleAddRecipe = (recipe: Recipe) => {
     // When using the hook, we would call this instead:
