@@ -196,7 +196,10 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
       res.send({ token });
     } catch (error: any) {
-      if (error.message === "User Not Found" || error.message === "Password Incorrect") {
+      if (
+        error.message === "User Not Found" ||
+        error.message === "Password Incorrect"
+      ) {
         res.status(404).send("Incorrect Credentials");
       } else {
         console.error(error);
@@ -308,4 +311,9 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       res.status(500).send("Server Error");
     }
   })
+  // save recipe
+
+  // get recipe details
+
+  //
 }
