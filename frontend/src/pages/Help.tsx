@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "../App.css"; // TODO: Probably remove or rename
+
 
 function Home() {
   const [count, setCount] = useState(0);
