@@ -290,4 +290,22 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       res.status(500).send("Server Error");
     }
   });
+
+  // route to generate food items from receipt data
+  // I'm expecting a body of { receipt: { receiptString: "A big long string of a receipt with as much information as possible", receiptId: 1 }
+  app.post('/receiptParser', async (req: JWTRequest, res) => {
+    try {
+      const receiptString = req.body?.receipt.receiptString
+      const receiptId = req.body?.receipt.receiptId
+
+      const receiptResponse = await dependencies.receipts.getReceiptByID(receiptId)
+      const receiptDate = receiptResponse.date
+      const gptResult = await dependencies.gptService.parseReceiptIntoFoodItems(receiptString, receiptDate )
+
+      res.send(gptResult)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  })
 }

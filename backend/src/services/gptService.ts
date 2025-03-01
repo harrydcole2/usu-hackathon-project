@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import FoodItems from "../db/foodItems";
+import FoodItems, { FoodItem } from "../db/foodItems";
 import Recipes from "../db/recipes";
 
 export class GptService {
@@ -36,6 +36,32 @@ export class GptService {
     `;
     const response = await this.generateQuery(queryString);
     return response;
+  }
+
+  async parseReceiptIntoFoodItems(receiptString: string, receiptDate: string): Promise<FoodItem[]> {
+    const queryString = `
+      I have the following text that represents a user's receipt from visiting a store, and I want you to convert this text
+      into JSON objects representing individual items in the receipt. Please only include the items that are food. Please 
+      generate a suggested expiration date for each of the items that will likely expire, given that the date they were 
+      purchased was ${receiptDate}. Here is the schema I want the items to be in - 
+      { item_name: String, quantity: Number, unit: String, expiration_date: String }. 
+
+      Return a list of objects containing this data: 
+
+      ${receiptString}
+
+      Don't add any extra content, and return the data in the format of "[ {item_name: string, quantity: number, unit: string, expiration_date: string}, { ... }, ... ]
+    `;
+
+    const response = await this.generateQuery(queryString)
+    if (response == null) {
+      throw new Error("GPT returned null :(")
+    }
+    console.log(response)
+
+    const objectResponse = JSON.parse(response)
+
+    return objectResponse
   }
 
   private async generateQuery(queryString: string): Promise<string | null> {

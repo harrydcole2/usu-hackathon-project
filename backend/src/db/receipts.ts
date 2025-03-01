@@ -4,7 +4,7 @@ export interface receiptResult {
   id: number;
   user_id: number;
   name: string;
-  data: Date;
+  date: string;
 }
 
 export default class Receipts {
@@ -43,7 +43,7 @@ export default class Receipts {
     try {
       const results = await this.sql<receiptResult[]>`
       SELECT * FROM receipts
-      WHERE receipt.id = ${receipt_id}
+      WHERE receipts.id = ${receipt_id}
       `;
       return results[0] as receiptResult;
     } catch (error) {
