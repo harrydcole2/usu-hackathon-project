@@ -64,10 +64,14 @@ export default function Pantry() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Pantry</h1>
-          <p className="text-slate-500">Manage your pantry ingredients</p>
+          <h1 className="text-3xl font-bold tracking-tight text-primary">
+            Pantry
+          </h1>
+          <p className="text-muted-foreground">
+            Manage your pantry ingredients
+          </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
           <Plus size={18} />
           Add Item
         </Button>
@@ -75,11 +79,14 @@ export default function Pantry() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {pantryItems.map((item) => (
-          <Card key={item.id} className="overflow-hidden">
+          <Card key={item.id} className="overflow-hidden border-border">
             <CardHeader className="pb-2">
               <div className="flex justify-between">
-                <CardTitle>{item.title}</CardTitle>
-                <Badge variant="outline">
+                <CardTitle className="text-primary">{item.title}</CardTitle>
+                <Badge
+                  variant="outline"
+                  className="bg-secondary/30 text-secondary-foreground border-secondary"
+                >
                   {item.quantity} {item.unit}
                 </Badge>
               </div>
@@ -90,15 +97,19 @@ export default function Pantry() {
                 ${item.cost.toFixed(2)}
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-2 bg-slate-50 py-2">
-              <Button variant="outline" size="sm">
+            <CardFooter className="flex justify-end gap-2 bg-muted/10 py-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-primary/30 text-primary hover:bg-primary/10"
+              >
                 <Edit size={16} className="mr-1" />
                 Edit
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <Trash2 size={16} className="mr-1" />
                 Delete

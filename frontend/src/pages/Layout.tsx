@@ -15,8 +15,10 @@ const NavItem = ({ to, icon, label }: NavItemProps) => (
     className={({ isActive }) =>
       cn(
         "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-        "hover:bg-slate-800",
-        isActive ? "bg-slate-800 text-white font-medium" : "text-slate-400"
+        "hover:bg-sidebar-border/20",
+        isActive
+          ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+          : "text-sidebar-foreground/80"
       )
     }
   >
@@ -27,17 +29,24 @@ const NavItem = ({ to, icon, label }: NavItemProps) => (
 
 export default function Layout() {
   return (
-    <div className="flex h-screen bg-slate-100">
-      <div className="w-64 bg-slate-900 text-white p-4 flex flex-col">
-        <div className="flex flex-col items-center justify-center py-6 border-b border-slate-800">
-          <Avatar className="h-16 w-16 mb-2">
+    <div className="flex h-screen bg-background">
+      {/* Sidebar with custom theme colors */}
+      <div className="w-64 bg-sidebar text-sidebar-foreground p-4 flex flex-col">
+        {/* User profile */}
+        <div className="flex flex-col items-center justify-center py-6 border-b border-sidebar-border/30">
+          <Avatar className="h-16 w-16 mb-2 ring-2 ring-sidebar-ring/30">
             <AvatarImage src="/avatar-placeholder.png" alt="User avatar" />
-            <AvatarFallback>UN</AvatarFallback>
+            <AvatarFallback className="bg-sidebar-accent text-sidebar-accent-foreground">
+              UN
+            </AvatarFallback>
           </Avatar>
           <h3 className="font-medium">User Name</h3>
-          <p className="text-xs text-slate-400">username@email.com</p>
+          <p className="text-xs text-sidebar-foreground/70">
+            username@email.com
+          </p>
         </div>
 
+        {/* Navigation */}
         <nav className="mt-6 flex flex-col gap-1">
           <NavItem to="/" icon={<Home size={18} />} label="Home" />
           <NavItem to="/pantry" icon={<Package size={18} />} label="Pantry" />
@@ -49,7 +58,7 @@ export default function Layout() {
           <NavItem to="/help" icon={<HelpCircle size={18} />} label="Help" />
         </nav>
 
-        <div className="mt-auto pb-4 text-center text-xs text-slate-500">
+        <div className="mt-auto pb-4 text-center text-xs text-sidebar-foreground/50">
           Food Manager v1.0
         </div>
       </div>
