@@ -205,9 +205,9 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
     }
   });
 
-  // GPT Routes
+  // recipe routes
 
-  // route to get recipes
+  // route to generate 5 recipes
   app.get("/recipe", async (req: JWTRequest, res) => {
     const user_id = req.auth?.userId;
     try {
@@ -219,7 +219,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
     }
   });
 
-  // route to
+  // route to modify recipe
   app.put("/recipe", async (req: JWTRequest, res) => {
     const user_id = req.auth?.userId;
     const recipe_id = req.body.recipe_id;
@@ -237,7 +237,31 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
   // save recipe
 
-  // get recipe details
+  // route to get more specifics on recipe
+  app.get("/recipe/detail", async (req: JWTRequest, res) => {
+    const user_id = req.auth?.userId;
+    const recipe = req.body.recipe;
+    try {
+      const queryResponse = await dependencies.gptService.getDetailedRecipe(
+        user_id,
+        recipe
+      );
+      res.send(queryResponse);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
 
-  //
+  // route to get all recipes belonging to a user
+  app.get("/recipe/all", async (req: JWTRequest, res) => {
+    const user_id = req.auth?.userId;
+    try {
+      const queryResponse = await dependencies.recipes.getRecipes(user_id);
+      res.send(queryResponse);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
 }

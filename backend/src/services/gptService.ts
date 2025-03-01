@@ -67,6 +67,22 @@ export class GptService {
     return response;
   }
 
+  public async getDetailedRecipe(user_id: number, recipe: string) {
+    const userFridge = JSON.stringify(
+      await this.foodItems.getUserFridge(user_id)
+    );
+    const queryString = `
+    These are the ingredients that I currently have: ${userFridge}
+    This is the recipe that I want to make: ${recipe}
+    Given the quantities of food that I have in my fridge, give me back this recipe
+    but with more detailed instructions and specific quantities for each food.
+    Do not say anything before or after giving the recipe
+    `;
+    const response = await this.generateQuery(queryString);
+    console.log(response);
+    return response;
+  }
+
   private async generateQuery(queryString: string): Promise<string | null> {
     const response = await this.openAI.chat.completions.create({
       model: "gpt-3.5-turbo",
