@@ -1,7 +1,8 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { Home, Package, Utensils, HelpCircle } from "lucide-react";
+import { Home, Package, Utensils, HelpCircle, LogOut } from "lucide-react"; // Added LogOut icon
+import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 
 interface NavItemProps {
   to: string;
@@ -28,11 +29,16 @@ const NavItem = ({ to, icon, label }: NavItemProps) => (
 );
 
 export default function Layout() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar with custom theme colors */}
       <div className="w-64 bg-sidebar text-sidebar-foreground p-4 flex flex-col">
-        {/* User profile */}
         <div className="flex flex-col items-center justify-center py-6 border-b border-sidebar-border/30">
           <Avatar className="h-16 w-16 mb-2 ring-2 ring-sidebar-ring/30">
             <AvatarImage src="/avatar-placeholder.png" alt="User avatar" />
@@ -46,7 +52,6 @@ export default function Layout() {
           </p>
         </div>
 
-        {/* Navigation */}
         <nav className="mt-6 flex flex-col gap-1">
           <NavItem to="/" icon={<Home size={18} />} label="Home" />
           <NavItem to="/pantry" icon={<Package size={18} />} label="Pantry" />
@@ -58,12 +63,22 @@ export default function Layout() {
           <NavItem to="/help" icon={<HelpCircle size={18} />} label="Help" />
         </nav>
 
+        <div className="mt-6">
+          <Button
+            variant="outline"
+            className="w-full flex items-center gap-3 justify-center text-red-500 hover:text-white hover:bg-red-500"
+            onClick={handleLogout}
+          >
+            <LogOut size={18} />
+            <span>Log Out</span>
+          </Button>
+        </div>
+
         <div className="mt-auto pb-4 text-center text-xs text-sidebar-foreground/50">
           Food Manager v1.0
         </div>
       </div>
 
-      {/* Main content */}
       <main className="flex-1 overflow-auto p-6">
         <Outlet />
       </main>

@@ -25,7 +25,7 @@ function Home() {
             Help
           </a>
           <a
-            href="#"
+            href="/login"
             className="bg-[#3F6566] border-3 rounded-xl border-[#3F6566] p-3 text-white hover:underline"
           >
             Login
