@@ -4,6 +4,7 @@ import api from "../utils/api";
 const RECIPE_PATH = "/recipe";
 const RECIPE_DETAIL_PATH = "/recipe/detail";
 const RECIPE_ALL_PATH = "/recipe/all";
+const RECIPE_SAVE_PATH = "/recipe/save";
 
 export interface Recipe {
   recipe_string: string;
@@ -17,8 +18,12 @@ interface DetailedRecipeRequest {
   recipe: Recipe;
 }
 
+interface SaveRecipeRequest {
+  recipe: string;
+}
+
 // Get recipe recommendations based on user's fridge
-async function getRecipes(): Promise<Recipe[]> {
+async function getRecipes(): Promise<string[]> {
   const response = await api.get(RECIPE_PATH);
   return response.data;
 }
@@ -72,5 +77,22 @@ async function getDetailedRecipe(data: DetailedRecipeRequest): Promise<Recipe> {
 export function useGetDetailedRecipe() {
   return useMutation({
     mutationFn: getDetailedRecipe,
+  });
+}
+
+// Save a new recipe
+async function saveRecipe(data: SaveRecipeRequest): Promise<Recipe> {
+  const response = await api.put(RECIPE_SAVE_PATH, data);
+  return response.data;
+}
+
+export function useSaveRecipe() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: saveRecipe,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userRecipes"] });
+    },
   });
 }
