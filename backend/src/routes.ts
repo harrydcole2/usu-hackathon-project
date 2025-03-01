@@ -5,7 +5,7 @@ import { Request as JWTRequest } from "express-jwt";
 export default function setupRoutes(app: Express, dependencies: Dependencies) {
   app.get("/", (req, res) => {
     res.send("Hello World!");
-  });
+  })
 
   // Food Items Endpoints
 
@@ -16,21 +16,60 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       const foodResult = await dependencies.foodItems.getUserFridge(targetUser)
       console.log(foodResult)
 
-
+      res.send(foodResult)
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
     }
   });
 
-  // Expecting body to be like { foodItem: { itemName, }}
+  // Expecting body to be like { foodItem: { item_name, quantity, receipt_id, unit, expiration_date }}
   app.post("/foodItems", async (req: JWTRequest, res) => {
     try {
-      const newFoodItem = req.body?.foodItem
+      const receivedFoodItem = req.body?.foodItem
+      const targetUser = req.auth?.userId
+
+      const newFoodItem = {
+        ...receivedFoodItem, 
+        user_id: targetUser
+      }
+
+      await dependencies.foodItems.addFoodItem(newFoodItem)
 
     } catch (error) {
       console.error(error)
-      res.status(500)
+      res.status(500).send("Server Error");
+    }
+  })
+
+  // Expecting body to be like { foodItem: { id, item_name, quantity, receipt_id, unit, expiration_date }}
+  // NOTE THE id
+  app.put('/foodItems', async (req: JWTRequest, res) => {
+    try {
+      const receivedFoodItem = req.body?.foodItem
+      const targetUser = req.auth?.userId
+
+      const newFoodItem = {
+        ...receivedFoodItem, 
+        user_id: targetUser
+      }
+
+      await dependencies.foodItems.updateFoodItem(newFoodItem)
+    } catch (error) {
+      console.error(error)
+      res.status(500).send("Server Error");
+    }
+  })
+
+  app.delete('/foodItems/:foodId', async (req: JWTRequest, res) => {
+    try {
+      const itemId = req.params?.foodId
+      const targetUser = req.auth?.userId
+
+      await dependencies.foodItems.removeFoodItem(Number(itemId), targetUser)
+    } catch (error) {
+      console.error(error)
+      res.status(500).send("Server Error");
     }
   })
 
