@@ -1,25 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Loader2 } from "lucide-react";
 import { formatDistanceToNow, parseISO, differenceInDays } from "date-fns";
+import { FoodItem } from "@/endpoints/foodItem";
 
-interface Receipt {
-  id: string;
-  date: string;
-}
-
-interface PantryItemProps {
-  id: string;
-  user_id: string;
-  item_name: string;
-  quantity: number;
-  receipt_id: string;
-  unit: string;
-  expiration_date: string;
-  receipt: Receipt;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+interface PantryItemProps extends FoodItem {
+  onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
+  isDeleting?: boolean;
 }
 
 export const PantryRow = ({
@@ -28,11 +17,12 @@ export const PantryRow = ({
   quantity,
   unit,
   expiration_date,
-  receipt,
+  receipt_date,
   onEdit,
   onDelete,
+  isDeleting = false,
 }: PantryItemProps) => {
-  const purchaseDate = parseISO(receipt.date);
+  const purchaseDate = receipt_date ? parseISO(receipt_date) : new Date();
   const expiryDate = parseISO(expiration_date);
   const today = new Date();
 
@@ -46,17 +36,19 @@ export const PantryRow = ({
   );
 
   const getProgressColor = () => {
-    // TODO: Have a gradient
     return "bg-[#AA4A44]";
   };
 
   const purchaseDateFormatted = formatDistanceToNow(purchaseDate, {
     addSuffix: true,
   });
+
   const expiryDateFormatted =
     daysRemaining < 0
       ? `Expired ${formatDistanceToNow(expiryDate, { addSuffix: false })} ago`
       : `Expires in ${daysRemaining} days`;
+
+  if (!id) return null;
 
   return (
     <Card className="overflow-hidden border-border">
@@ -95,6 +87,7 @@ export const PantryRow = ({
               size="sm"
               className="border-primary/30 text-primary hover:bg-primary/10"
               onClick={() => onEdit(id)}
+              disabled={isDeleting}
             >
               <Edit size={16} className="mr-1" />
               Edit
@@ -104,8 +97,13 @@ export const PantryRow = ({
               size="sm"
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
               onClick={() => onDelete(id)}
+              disabled={isDeleting}
             >
-              <Trash2 size={16} />
+              {isDeleting ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Trash2 size={16} />
+              )}
             </Button>
           </div>
         </div>
