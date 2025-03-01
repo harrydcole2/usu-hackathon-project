@@ -7,7 +7,8 @@ import Recipes from "./db/recipes";
 
 export interface Dependencies {
   authService: UserAuthService;
-  gptService: GptService;
+  gptService: GptService;;
+  foodItems: FoodItems;
 }
 
 export default class Config {
@@ -16,7 +17,8 @@ export default class Config {
 
     const users = new Users(sql);
     const foodItems = new FoodItems(sql);
-    const recipes = new Recipes(sql);
+    const recipes = new Recipes(sql);;
+    const foodItems = new FoodItems(sql);
 
     const authService = new UserAuthService(users);
     const gptService = new GptService(foodItems, recipes);
@@ -24,6 +26,8 @@ export default class Config {
     return {
       authService,
       gptService,
+      foodItems
     };
   }
 }
+    

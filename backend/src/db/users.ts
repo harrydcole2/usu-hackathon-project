@@ -1,5 +1,13 @@
 import { Sql } from "postgres";
 
+interface UserResult {
+  id?: number;
+  username: string;
+  password_hash: string;
+  first_name: string;
+  last_name: string;
+}
+
 export default class Users {
   sql: Sql;
 
@@ -11,14 +19,14 @@ export default class Users {
   public async getUser(username: string) {
     try {
       const result = await this.sql`
-        SELECT username, password_hash
+        SELECT username, password_hash, first_name, last_name
         FROM users
         WHERE users.username = ${username}
       `;
 
       console.log("This is result in getUser: ", result);
 
-      const user = result[0];
+      const user = result[0] as UserResult;
       console.log("This is the user we are returning in getUser: ", user);
       return user || null; // Return null if no user is found
     } catch (error) {

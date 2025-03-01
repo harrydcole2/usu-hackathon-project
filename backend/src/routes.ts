@@ -7,17 +7,44 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
     res.send("Hello World!");
   });
 
+  // Food Items Endpoints
+
+  app.get("/foodItems/all", async (req: JWTRequest, res) => {
+    try {
+      const targetUser = req.auth?.userId
+
+      const foodResult = await dependencies.foodItems.getUserFridge(targetUser)
+      console.log(foodResult)
+
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
+
+  // Expecting body to be like { foodItem: { itemName, }}
+  app.post("/foodItems", async (req: JWTRequest, res) => {
+    try {
+      const newFoodItem = req.body?.foodItem
+
+    } catch (error) {
+      console.error(error)
+      res.status(500)
+    }
+  })
+
   // Authentication Routes
 
   app.post("/login", async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    if (username == null || password == null) {
-      res.status(400).send("Missing Username and/or Password");
-    }
-
     try {
+      const username = req.body?.username;
+      const password = req.body?.password;
+
+      if (username == null || password == null) {
+        res.status(400).send("Missing Username and/or Password");
+      }
+
       const token = await dependencies.authService.login(username, password);
 
       res.send({ token });
@@ -27,20 +54,22 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
         error.message === "Password Incorrect"
       ) {
         res.status(404).send("Incorrect Credentials");
+      } else {
+        console.error(error);
+        res.status(500).send("Server Error");
       }
-      res.status(500).send("Server Error");
     }
   });
 
   app.put("/users", async (req: JWTRequest, res) => {
-    const targetUser = req.auth?.userId;
-    const password = req.body.password;
-
-    if (password == null) {
-      res.status(400).send("Missing new Password");
-    }
-
     try {
+      const targetUser = req.auth?.userId;
+      const password = req.body?.password;
+
+      if (password == null) {
+        res.status(400).send("Missing new Password");
+      }
+
       await dependencies.authService.updatePassword(targetUser, password);
 
       res.send("Password Update Complete");
@@ -51,17 +80,18 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   });
 
   app.post("/newUser", async (req: JWTRequest, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    if (username == null || password == null) {
-      res.status(400).send("Missing Username and/or Password");
-    }
-
     try {
-      await dependencies.authService.createUser(username, password);
+      console.log(req.body);
+      const username = req.body?.username;
+      const password = req.body?.password;
 
-      res.send("User Creation Complete");
+      if (username == null || password == null) {
+        res.status(400).send("Missing Username and/or Password");
+      } else {
+        await dependencies.authService.createUser(username, password);
+
+        res.send("User Creation Complete");
+      }
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
@@ -69,7 +99,8 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   });
 
   app.delete("/users", async (req: JWTRequest, res) => {
-    const targetUser = req.auth?.userId;
+    try {
+      const targetUser = req.auth?.userId;
 
     try {
       await dependencies.authService.removeUser(targetUser);
