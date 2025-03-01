@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Refrigerator, ArrowRight } from "lucide-react";
+import { Refrigerator, ChefHat, ArrowRight, Search } from "lucide-react"
 
 function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const produceList = [
     "Apple",
     "Banana",
@@ -22,44 +25,67 @@ function Home() {
     y: Math.random() * window.innerHeight - 100,
   });
 
-  const handle_login = () => {
-    console.log("button clicked");
-    navigate("/login"); // Navigate to the provided path
+  const handleGetStarted = () => {
+    if (isLoggedIn) {
+      navigate("/pantry");
+    } else {
+      navigate("/login");
+    }
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("token") != null) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden bg-gradient-to-b from-[#C9D6EA] to-[#E8F7EE] relative">
-      <nav className="relative z-10 flex justify-between items-center p-6 bg-[#3F6566] backdrop-blur-sm shadow-lg mb-12">
-        <div className="flex items-center space-x-3">
-          <Refrigerator className="h-8 w-8 text-[#3F6566]" />
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-[#C9D6EA] to-[#E8F7EE] bg-clip-text text-transparent p-1.75">
-            The Pantry AI
-          </h1>
+      <div className="flex flex-col min-h-screen overflow-hidden bg-gradient-to-b from-[#C9D6EA] to-[#E8F7EE] relative">
+        <nav className="relative z-10 flex justify-between items-center p-6 bg-[#3F6566] backdrop-blur-sm shadow-lg mb-12">
+          <div className="flex items-center space-x-3">
+            <Refrigerator className="h-8 w-8 text-[#3F6566]" />
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-[#C9D6EA] to-[#E8F7EE] bg-clip-text text-transparent p-1.75">
+              The Pantry AI
+            </h1>
+          </div>
+          <div className="flex space-x-4 text-lg">
+            {isLoggedIn ? (
+            <div className="flex space-x-4">
+              <a
+                href="/pantry"
+                className=" text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2"
+              >
+                <Search className="h-4 w-4" />
+                Pantry
+              </a>
+              <a
+                href="/recipes"
+                className="text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2"
+              >
+                <ChefHat className="h-4 w-4" />
+                Recipes
+              </a>
+                <a
+           
+                href="/help"
+           
+                className="text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3"
+          
+              >
+                  Help
+                </a>
+              </div>
+          ) : (
+            <a
+                href="/login"
+                className="bg-gradient-to-r from-[#448C8E] to-[#15AEB4] rounded-xl p-3 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Login
+              </a>
+            )}
         </div>
-        <div className="flex space-x-4 text-lg">
-          {/* <a href="/pantry" className=" text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2">
-          <Search className="h-4 w-4" />
-          Pantry
-        </a>
-        <a href="#" className="text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2">
-          <ChefHat className="h-4 w-4" />
-          Recipes
-        </a> */}
-          <a
-            href="/help"
-            className="text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3"
-          >
-            Help
-          </a>
-          <a
-            href="/login"
-            className="bg-gradient-to-r from-[#448C8E] to-[#15AEB4] rounded-xl p-3 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-          >
-            Login
-          </a>
-        </div>
-      </nav>
-      <main className="relative z-10 flex flex-col items-center flex-grow px-4 w-full max-w-5xl mx-auto">
+        </nav>
+        <main className="relative z-10 flex flex-col items-center flex-grow px-4 w-full max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,17 +101,17 @@ function Home() {
             things expire, and generate meal plans to use everything
             efficiently. Smart food management for a sustainable kitchen.
           </p>
-          <div className="flex justify-center mb-16">
-            <motion.button
-              className="group flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-full text-xl md:text-2xl px-8 py-4 shadow-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handle_login}
-            >
-              Get Started
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
-          </div>
+            <div className="flex justify-center mb-16">
+              <motion.button
+                className="group flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-full text-xl md:text-2xl px-8 py-4 shadow-lg"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleGetStarted}
+              >
+                {isLoggedIn ? "Go To Pantry" : "Get Started"}
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </motion.button>
+            </div>
         </motion.div>
 
         {/* Feature cards */}
@@ -134,6 +160,7 @@ function Home() {
           ))}
         </div>
       </main>
+
 
       {produceList.map((produce, index) => (
         <motion.div
