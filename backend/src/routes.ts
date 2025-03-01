@@ -5,18 +5,18 @@ import { Request as JWTRequest } from "express-jwt";
 export default function setupRoutes(app: Express, dependencies: Dependencies) {
   app.get("/", (req, res) => {
     res.send("Hello World!");
-  })
+  });
 
   // Food Items Endpoints
 
   app.get("/foodItems/all", async (req: JWTRequest, res) => {
     try {
-      const targetUser = req.auth?.userId
+      const targetUser = req.auth?.userId;
 
-      const foodResult = await dependencies.foodItems.getUserFridge(targetUser)
-      console.log(foodResult)
+      const foodResult = await dependencies.foodItems.getUserFridge(targetUser);
+      console.log(foodResult);
 
-      res.send(foodResult)
+      res.send(foodResult);
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
@@ -26,54 +26,98 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   // Expecting body to be like { foodItem: { item_name, quantity, receipt_id, unit, expiration_date }}
   app.post("/foodItems", async (req: JWTRequest, res) => {
     try {
-      const receivedFoodItem = req.body?.foodItem
-      const targetUser = req.auth?.userId
+      const receivedFoodItem = req.body?.foodItem;
+      const targetUser = req.auth?.userId;
 
       const newFoodItem = {
-        ...receivedFoodItem, 
-        user_id: targetUser
-      }
+        ...receivedFoodItem,
+        user_id: targetUser,
+      };
 
-      await dependencies.foodItems.addFoodItem(newFoodItem)
+      await dependencies.foodItems.addFoodItem(newFoodItem);
 
-      res.send('Food Item Successfully Added')
+      res.send("Food Item Successfully Added");
     } catch (error) {
-      console.error(error)
+      console.error(error);
       res.status(500).send("Server Error");
     }
-  })
+  });
+
+  // Expecting body to be like { foodItems: [{ item_name, quantity, receipt_id, unit, expiration_date }, { item_name, quantity, receipt_id, unit, expiration_date }]}
+  app.post("/foodItems/batch", async (req: JWTRequest, res) => {
+    try {
+      const receivedFoodItems = req.body?.foodItems as any[];
+      const targetUser = req.auth?.userId;
+
+      const newFoodItems = receivedFoodItems.map((item) => {
+        return {
+          ...item,
+          user_id: targetUser,
+        };
+      });
+
+      await dependencies.foodItems.addBatchFoodItems(newFoodItems);
+      res.send("Food Batch Items Successfully Added");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
 
   // Expecting body to be like { foodItem: { id, item_name, quantity, receipt_id, unit, expiration_date }}
   // NOTE THE id
-  app.put('/foodItems', async (req: JWTRequest, res) => {
+  app.put("/foodItems", async (req: JWTRequest, res) => {
     try {
-      const receivedFoodItem = req.body?.foodItem
-      const targetUser = req.auth?.userId
+      const receivedFoodItem = req.body?.foodItem;
+      const targetUser = req.auth?.userId;
 
       const newFoodItem = {
-        ...receivedFoodItem, 
-        user_id: targetUser
-      }
+        ...receivedFoodItem,
+        user_id: targetUser,
+      };
 
-      await dependencies.foodItems.updateFoodItem(newFoodItem)
+      await dependencies.foodItems.updateFoodItem(newFoodItem);
 
-      res.send("Food Item Successfully Updated")
+      res.send("Food Item Successfully Updated");
     } catch (error) {
-      console.error(error)
+      console.error(error);
       res.status(500).send("Server Error");
     }
-  })
+  });
 
-  app.delete('/foodItems/:foodId', async (req: JWTRequest, res) => {
+  // Expecting body to be like { foodItems: [{ id, item_name, quantity, receipt_id, unit, expiration_date }, { ... }]}
+  // NOTE THE id
+  app.put("/foodItems/batch", async (req: JWTRequest, res) => {
     try {
-      const itemId = req.params?.foodId
-      const targetUser = req.auth?.userId
+      const receivedFoodItems = req.body?.foodItems as any[];
+      const targetUser = req.auth?.userId;
 
-      await dependencies.foodItems.removeFoodItem(Number(itemId), targetUser)
+      const newFoodItems = receivedFoodItems.map((item) => {
+        return {
+          ...item,
+          user_id: targetUser,
+        };
+      });
 
-      res.send("Food Item Successfully Deleted")
+      await dependencies.foodItems.updateBatchFoodItems(newFoodItems);
+
+      res.send("Food Item Successfully Updated");
     } catch (error) {
-      console.error(error)
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
+
+  app.delete("/foodItems/:foodId", async (req: JWTRequest, res) => {
+    try {
+      const itemId = req.params?.foodId;
+      const targetUser = req.auth?.userId;
+
+      await dependencies.foodItems.removeFoodItem(Number(itemId), targetUser);
+
+      res.send("Food Item Successfully Deleted");
+    } catch (error) {
+      console.error(error);
       res.status(500).send("Server Error");
     }
   });
@@ -134,7 +178,12 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       if (username == null || password == null) {
         res.status(400).send("Missing Username and/or Password");
       } else {
-        await dependencies.authService.createUser(username, password, firstName, lastName);
+        await dependencies.authService.createUser(
+          username,
+          password,
+          firstName,
+          lastName
+        );
 
         res.send("User Creation Complete");
       }
@@ -185,4 +234,10 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       res.status(500).send("Server Error");
     }
   });
+
+  // save recipe
+
+  // get recipe details
+
+  //
 }
