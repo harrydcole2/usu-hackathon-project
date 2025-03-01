@@ -1,5 +1,4 @@
 import { Sql } from "postgres";
-import sql from "./pgConnection";
 
 export default class Users {
   sql: Sql;
