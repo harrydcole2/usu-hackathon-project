@@ -19,7 +19,7 @@ export default class UserAuthService {
       throw new Error('Password Incorrect')
     }
 
-    return jwt.sign({ userId: userData.id }, process.env.JWT_KEY ?? 'secretDONOTUSETHIS')
+    return jwt.sign({ userId: userData.id, firstName: userData.first_name, lastName: userData.last_name }, process.env.JWT_KEY ?? 'secretDONOTUSETHIS')
   }
 
   async createUser(username: string, password: string, firstName: string, lastName: string): Promise<void> {

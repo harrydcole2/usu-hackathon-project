@@ -28,7 +28,9 @@ export default class FoodItems {
     `;
       return result as unknown as FoodItem[];
     } catch (error: any) {
-      console.error(`Failed to receive user's foodItems with id ${user_id}'s fridge: ${error.message}`);
+      console.error(
+        `Failed to receive user's foodItems with id ${user_id}'s fridge: ${error.message}`
+      );
       throw Error(`Failed to receive user's foodItems with id ${user_id}'s fridge`);
     }
   }
@@ -65,39 +67,77 @@ export default class FoodItems {
     }
   }
 
-  public async addFoodItem (item: FoodItem): Promise<void> {
-    console.log(item)
+  public async addFoodItem(item: FoodItem): Promise<void> {
+    console.log(item);
 
     try {
       await this.sql`
       INSERT INTO food_items (user_id, item_name, quantity, receipt_id, unit, expiration_date)
-      VALUES (${item.user_id ?? ''}, ${item.item_name}, ${item.quantity}, ${item.receipt_id ?? ''}, ${item.unit}, ${item.expiration_date})`
+      VALUES (${item.user_id ?? ""}, ${item.item_name}, ${item.quantity}, ${
+        item.receipt_id ?? ""
+      }, ${item.unit}, ${item.expiration_date})`;
     } catch (error: any) {
-      console.error(`Failed to insert new food item: ${error.message}`)
-      throw Error('Failed to Insert Food Item')
+      console.error(`Failed to insert new food item: ${error.message}`);
+      throw Error("Failed to Insert Food Item");
     }
   }
 
-  public async removeFoodItem (itemId: number, userId: number) {
+  public async addBatchFoodItems(items: FoodItem[]) {
+    try {
+      await this.sql`
+      INSERT INTO food_items (user_id, item_name, quantity, receipt_id, unit, expiration_date)
+      VALUES ${this.sql(items.map(item => 
+        [item.user_id ?? "", item.item_name, item.quantity, item.receipt_id ?? "", item.unit, item.expiration_date]
+      ))}
+    `;
+    } catch (error: any) {
+      console.error(`Failed to insert new food item: ${error.message}`);
+      throw Error("Failed to Insert Food Item");
+    }
+  }
+
+  public async removeFoodItem(itemId: number, userId: number) {
     try {
       await this.sql`
       DELETE FROM food_items
-      WHERE id = ${itemId} AND user_id = ${userId}`
+      WHERE id = ${itemId} AND user_id = ${userId}`;
     } catch (error: any) {
-      console.error(`Failed to Delete food item: ${error.message}`)
-      throw Error('Failed to Delete Food Item')
+      console.error(`Failed to Delete food item: ${error.message}`);
+      throw Error("Failed to Delete Food Item");
     }
   }
 
-  public async updateFoodItem (updatedItem: FoodItem) {
+  public async updateFoodItem(updatedItem: FoodItem) {
     try {
       await this.sql`
       UPDATE food_items
-      SET item_name = ${updatedItem.item_name}, quantity = ${updatedItem.quantity}, receipt_id = ${updatedItem.receipt_id ?? ''}, unit = ${updatedItem.unit}, expiration_date = ${updatedItem.expiration_date}
-      WHERE id = ${updatedItem.id ?? ''}`
+      SET item_name = ${updatedItem.item_name}, quantity = ${
+        updatedItem.quantity
+      }, receipt_id = ${updatedItem.receipt_id ?? ""}, unit = ${
+        updatedItem.unit
+      }, expiration_date = ${updatedItem.expiration_date}
+      WHERE id = ${updatedItem.id ?? ""}`;
     } catch (error: any) {
-      console.error(`Failed to Update food item: ${error.message}`)
-      throw Error('Failed to Update Food Item')
+      console.error(`Failed to Update food item: ${error.message}`);
+      throw Error("Failed to Update Food Item");
+    }
+  }
+
+  public async updateBatchFoodItems(updatedItems: FoodItem[]) {
+    try {
+      updatedItems.forEach(async (updatedItem) => {
+        await this.sql`
+        UPDATE food_items
+        SET item_name = ${updatedItem.item_name}, quantity = ${
+          updatedItem.quantity
+        }, receipt_id = ${updatedItem.receipt_id ?? ""}, unit = ${
+          updatedItem.unit
+        }, expiration_date = ${updatedItem.expiration_date}
+        WHERE id = ${updatedItem.id ?? ""}`;
+      });
+    } catch (error: any) {
+      console.error(`Failed to Update food item: ${error.message}`);
+      throw Error("Failed to Update Food Item");
     }
   }
 }
