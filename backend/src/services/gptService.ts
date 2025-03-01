@@ -1,15 +1,18 @@
 import OpenAI from "openai";
 import FoodItems from "../db/foodItems";
 import Recipes from "../db/recipes";
-const openai = new OpenAI();
 
 export class GptService {
   private foodItems: FoodItems;
   private recipes: Recipes;
+  private openAI: OpenAI;
 
   public constructor(foodItems: FoodItems, recipes: Recipes) {
     this.foodItems = foodItems;
     this.recipes = recipes;
+    this.openAI = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
   }
   public async getRecipes(user_id: number) {
     const userFridge = await this.foodItems.getUserFridge(user_id);
@@ -36,7 +39,7 @@ export class GptService {
   }
 
   private async generateQuery(queryString: string): Promise<string | null> {
-    const response = await openai.chat.completions.create({
+    const response = await this.openAI.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: "You are a helpful assistant." },
