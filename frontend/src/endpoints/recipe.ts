@@ -8,6 +8,7 @@ const RECIPE_SAVE_PATH = "/recipe/save";
 
 export interface Recipe {
   recipe_string: string;
+  id?: number;
 }
 
 interface RecipeModificationRequest {
@@ -81,7 +82,7 @@ export function useGetDetailedRecipe() {
 }
 
 // Save a new recipe
-async function saveRecipe(data: SaveRecipeRequest): Promise<Recipe> {
+async function saveRecipe(data: SaveRecipeRequest): Promise<Recipe[]> {
   const response = await api.put(RECIPE_SAVE_PATH, data);
   return response.data;
 }

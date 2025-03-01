@@ -175,7 +175,9 @@ export default function RecipesPage() {
         recipe: recipe.recipe_string,
       });
 
-      await saveRecipe({ recipe: detailedRecipe });
+      const publishedRecipe = await saveRecipe({ recipe: detailedRecipe });
+      setSelectedRecipe(publishedRecipe[0]);
+      setIsViewDialogOpen(true);
     } catch (error) {
       console.error("Error adding recipe:", error);
     }
