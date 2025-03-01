@@ -7,8 +7,8 @@ export interface Recipe {
   title: string;
   ingredients: string[];
   instructions: string;
-  preparationTime: number; // in minutes
-  cookingTime: number; // in minutes
+  preparationTime: number;
+  cookingTime: number;
   servings: number;
   imageUrl?: string;
   tags?: string[];
@@ -16,13 +16,10 @@ export interface Recipe {
   updatedAt: string;
 }
 
-// Define the input for creating/updating a recipe
 export type RecipeInput = Omit<Recipe, "id" | "createdAt" | "updatedAt">;
 
-// API paths
 const RECIPES_PATH = "/recipes";
 
-// API functions
 async function fetchRecipes(): Promise<Recipe[]> {
   const response = await api.get(RECIPES_PATH);
   return response.data;
@@ -53,7 +50,6 @@ async function deleteRecipe(id: string): Promise<void> {
   await api.delete(`${RECIPES_PATH}/${id}`);
 }
 
-// React Query hooks
 export function useRecipes() {
   return useQuery({
     queryKey: ["recipes"],
@@ -65,7 +61,7 @@ export function useRecipe(id: string) {
   return useQuery({
     queryKey: ["recipe", id],
     queryFn: () => fetchRecipeById(id),
-    enabled: !!id, // Only fetch when id is truthy
+    enabled: !!id,
   });
 }
 
@@ -75,9 +71,7 @@ export function useCreateRecipe() {
   return useMutation({
     mutationFn: createRecipe,
     onSuccess: (newRecipe) => {
-      // Invalidate the recipes list query to refetch
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
-      // Optionally update the cache directly
       queryClient.setQueryData(["recipe", newRecipe.id], newRecipe);
     },
   });
@@ -89,7 +83,6 @@ export function useUpdateRecipe() {
   return useMutation({
     mutationFn: updateRecipe,
     onSuccess: (updatedRecipe) => {
-      // Invalidate the recipes list and the specific recipe
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
       queryClient.invalidateQueries({ queryKey: ["recipe", updatedRecipe.id] });
     },
@@ -102,7 +95,6 @@ export function useDeleteRecipe() {
   return useMutation({
     mutationFn: deleteRecipe,
     onSuccess: (_, variables) => {
-      // Invalidate the recipes list and remove the specific recipe from cache
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
       queryClient.removeQueries({ queryKey: ["recipe", variables] });
     },
