@@ -1,0 +1,30 @@
+{
+  "name": "usu-hackathon-backend",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc && node dist/index.js",
+    "build": "tsc",
+    "test": "jest ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harrydcole2/usu-hackathon-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harrydcole2/usu-hackathon-project/issues"
+  },
+  "homepage": "https://github.com/harrydcole2/usu-hackathon-project#readme",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.7",
+    "typescript": "^5.8.2"
+  }
+}
