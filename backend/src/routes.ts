@@ -11,12 +11,10 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
   app.get("/foodItems/all", async (req: JWTRequest, res) => {
     try {
-      const targetUser = req.auth?.userId
+      const targetUser = req.auth?.userId;
 
-      const foodResult = await dependencies.foodItems.getUserFridge(targetUser)
-      console.log(foodResult)
-
-
+      const foodResult = await dependencies.foodItems.getUserFridge(targetUser);
+      console.log(foodResult);
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
@@ -26,13 +24,12 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   // Expecting body to be like { foodItem: { itemName, }}
   app.post("/foodItems", async (req: JWTRequest, res) => {
     try {
-      const newFoodItem = req.body?.foodItem
-
+      const newFoodItem = req.body?.foodItem;
     } catch (error) {
-      console.error(error)
-      res.status(500)
+      console.error(error);
+      res.status(500);
     }
-  })
+  });
 
   // Authentication Routes
 
@@ -99,8 +96,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   });
 
   app.delete("/users", async (req: JWTRequest, res) => {
-    try {
-      const targetUser = req.auth?.userId;
+    const targetUser = req.auth?.userId;
 
     try {
       await dependencies.authService.removeUser(targetUser);
