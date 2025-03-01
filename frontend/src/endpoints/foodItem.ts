@@ -3,6 +3,7 @@ import api from "../utils/api";
 
 const FOOD_ITEMS_PATH = "/foodItems";
 const FOOD_ITEMS_ALL_PATH = "/foodItems/all";
+const FOOD_ITEMS_BATCH_PATH = "/foodItems/batch";
 
 export interface FoodItem {
   id?: number;
@@ -42,6 +43,21 @@ export function useAddFoodItem() {
   });
 }
 
+async function addBatchFoodItems(foodItems: FoodItem[]): Promise<void> {
+  await api.post(FOOD_ITEMS_BATCH_PATH, { foodItems });
+}
+
+export function useAddBatchFoodItems() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: addBatchFoodItems,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["foodItems"] });
+    },
+  });
+}
+
 async function updateFoodItem(foodItem: FoodItem): Promise<void> {
   await api.put(FOOD_ITEMS_PATH, { foodItem });
 }
@@ -51,6 +67,21 @@ export function useUpdateFoodItem() {
 
   return useMutation({
     mutationFn: updateFoodItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["foodItems"] });
+    },
+  });
+}
+
+async function updateBatchFoodItems(foodItems: FoodItem[]): Promise<void> {
+  await api.put(FOOD_ITEMS_BATCH_PATH, { foodItems });
+}
+
+export function useUpdateBatchFoodItems() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateBatchFoodItems,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["foodItems"] });
     },

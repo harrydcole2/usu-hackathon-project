@@ -67,7 +67,10 @@ export class GptService {
     return response;
   }
 
-  async parseReceiptIntoFoodItems(receiptString: string, receiptDate: string): Promise<FoodItem[]> {
+  async parseReceiptIntoFoodItems(
+    receiptString: string,
+    receiptDate: string
+  ): Promise<FoodItem[]> {
     const queryString = `
       I have the following text that represents a user's receipt from visiting a store, and I want you to convert this text
       into JSON objects representing individual items in the receipt. Please only include the items that are food. Please 
@@ -82,15 +85,31 @@ export class GptService {
       Don't add any extra content, and return the data in the format of "[ {item_name: string, quantity: number, unit: string, expiration_date: string}, { ... }, ... ]
     `;
 
-    const response = await this.generateQuery(queryString)
+    const response = await this.generateQuery(queryString);
     if (response == null) {
-      throw new Error("GPT returned null :(")
+      throw new Error("GPT returned null :(");
     }
-    console.log(response)
+    console.log(response);
 
-    const objectResponse = JSON.parse(response)
+    const objectResponse = JSON.parse(response);
 
-    return objectResponse
+    return objectResponse;
+  }
+
+  public async getDetailedRecipe(user_id: number, recipe: string) {
+    const userFridge = JSON.stringify(
+      await this.foodItems.getUserFridge(user_id)
+    );
+    const queryString = `
+    These are the ingredients that I currently have: ${userFridge}
+    This is the recipe that I want to make: ${recipe}
+    Given the quantities of food that I have in my fridge, give me back this recipe
+    but with more detailed instructions and specific quantities for each food.
+    Do not say anything before or after giving the recipe
+    `;
+    const response = await this.generateQuery(queryString);
+    console.log(response);
+    return response;
   }
 
   private async generateQuery(queryString: string): Promise<string | null> {

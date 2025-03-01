@@ -11,6 +11,7 @@ export interface Dependencies {
   gptService: GptService;
   foodItems: FoodItems;
   receipts: Receipts;
+  recipes: Recipes;
 }
 
 export default class Config {
@@ -29,7 +30,8 @@ export default class Config {
       authService,
       gptService,
       foodItems,
-      receipts
+      receipts,
+      recipes,
     };
   }
 }

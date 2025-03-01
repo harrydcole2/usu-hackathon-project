@@ -126,7 +126,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       const targetUser = req.auth?.userId;
 
       const receipts = await dependencies.receipts.getReceiptByUser(targetUser);
-      res.send({ receipts })
+      res.send({ receipts });
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
@@ -157,11 +157,16 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   // I'm expecting an object that looks like { receiptData: { id, name, date }}
   app.put("/receipts", async (req: JWTRequest, res) => {
     try {
-      const receiptData = req.body?.receiptData
+      const receiptData = req.body?.receiptData;
       const targetUser = req.auth?.userId;
 
-      await dependencies.receipts.updateReceipt(receiptData.id, receiptData.date, receiptData.name, targetUser)
-      res.send('Update on Receipt Complete')
+      await dependencies.receipts.updateReceipt(
+        receiptData.id,
+        receiptData.date,
+        receiptData.name,
+        targetUser
+      );
+      res.send("Update on Receipt Complete");
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
@@ -171,10 +176,10 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   app.delete("/receipts/:receiptId", async (req: JWTRequest, res) => {
     try {
       const targetUser = req.auth?.userId;
-      const receiptId = req.params?.receiptId
+      const receiptId = req.params?.receiptId;
 
-      await dependencies.receipts.deleteReceipt(Number(receiptId), targetUser)
-      res.send('Successfully Deleted Recipe')
+      await dependencies.receipts.deleteReceipt(Number(receiptId), targetUser);
+      res.send("Successfully Deleted Recipe");
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
@@ -264,9 +269,9 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
     }
   });
 
-  // GPT Routes
+  // recipe routes
 
-  // route to get recipes
+  // route to generate 5 recipes
   app.get("/recipe", async (req: JWTRequest, res) => {
     const user_id = req.auth?.userId;
     try {
@@ -278,7 +283,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
     }
   });
 
-  // route to
+  // route to modify recipe
   app.put("/recipe", async (req: JWTRequest, res) => {
     const user_id = req.auth?.userId;
     const recipe_id = req.body.recipe_id;
@@ -296,24 +301,69 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
   // route to generate food items from receipt data
   // I'm expecting a body of { receipt: { receiptString: "A big long string of a receipt with as much information as possible", receiptId: 1 }
-  app.post('/receiptParser', async (req: JWTRequest, res) => {
+  app.post("/receiptParser", async (req: JWTRequest, res) => {
     try {
-      const receiptString = req.body?.receipt.receiptString
-      const receiptId = req.body?.receipt.receiptId
+      const receiptString = req.body?.receipt.receiptString;
+      const receiptId = req.body?.receipt.receiptId;
 
-      const receiptResponse = await dependencies.receipts.getReceiptByID(receiptId)
-      const receiptDate = receiptResponse.date
-      const gptResult = await dependencies.gptService.parseReceiptIntoFoodItems(receiptString, receiptDate )
+      const receiptResponse = await dependencies.receipts.getReceiptByID(
+        receiptId
+      );
+      const receiptDate = receiptResponse.date;
+      const gptResult = await dependencies.gptService.parseReceiptIntoFoodItems(
+        receiptString,
+        receiptDate
+      );
 
-      res.send(gptResult)
+      res.send(gptResult);
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
     }
-  })
+  });
   // save recipe
 
-  // get recipe details
+  // route to get more specifics on recipe
+  app.get("/recipe/detail", async (req: JWTRequest, res) => {
+    const user_id = req.auth?.userId;
+    const recipe = req.body.recipe;
+    try {
+      const queryResponse = await dependencies.gptService.getDetailedRecipe(
+        user_id,
+        recipe
+      );
+      res.send(queryResponse);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
 
-  //
+  // route to get all recipes belonging to a user
+  app.get("/recipe/all", async (req: JWTRequest, res) => {
+    const user_id = req.auth?.userId;
+    try {
+      const queryResponse = await dependencies.recipes.getRecipes(user_id);
+      res.send(queryResponse);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
+
+  // take a recipe string saves it
+  app.put("/recipe/save", async (req: JWTRequest, res) => {
+    const user_id = req.auth?.userId;
+    const recipe = req.body.recipe;
+    try {
+      const queryResponse = await dependencies.recipes.insertRecipe(
+        user_id,
+        recipe
+      );
+      res.send(queryResponse);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
 }

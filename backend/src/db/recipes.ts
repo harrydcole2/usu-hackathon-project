@@ -25,12 +25,13 @@ export default class Recipes {
   }
 
   // insert recipe into database given username and recipe string
-  public async insertRecipe(user_id: number, recipe: string) {
+  public async insertRecipe(user_id: number, recipe_string: string) {
     try {
+      console.log(user_id, recipe_string);
       const result = await this.sql`
-        INSERT INTO recipes (user_id, recipe)
-        VALUES (${user_id}, ${recipe})
-        RETURNING user_id, recipe
+        INSERT INTO recipes (user_id, recipe_string)
+        VALUES (${user_id}, ${recipe_string})
+        RETURNING user_id, recipe_string
       `;
       return result;
     } catch (error) {
