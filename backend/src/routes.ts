@@ -123,11 +123,13 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       console.log(req.body);
       const username = req.body?.username;
       const password = req.body?.password;
+      const firstName = req.body?.firstName;
+      const lastName = req.body?.lastName;
 
       if (username == null || password == null) {
         res.status(400).send("Missing Username and/or Password");
       } else {
-        await dependencies.authService.createUser(username, password);
+        await dependencies.authService.createUser(username, password, firstName, lastName);
 
         res.send("User Creation Complete");
       }

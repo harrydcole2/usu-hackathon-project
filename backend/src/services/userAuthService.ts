@@ -22,14 +22,14 @@ export default class UserAuthService {
     return jwt.sign({ userId: userData.id }, process.env.JWT_KEY ?? 'secretDONOTUSETHIS')
   }
 
-  async createUser(username: string, password: string): Promise<void> {
+  async createUser(username: string, password: string, firstName: string, lastName: string): Promise<void> {
     const passwordHash = await this.hashPassword(password)
 
     if (passwordHash == null) {
       throw new Error('Password Hash Failure')
     } 
 
-    await this.users.insertUser(username, passwordHash)
+    await this.users.insertUser(username, passwordHash, firstName, lastName)
   }
 
   async removeUser(userId: number): Promise<void> {
