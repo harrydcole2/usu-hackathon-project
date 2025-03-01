@@ -6,11 +6,7 @@ const RECIPE_DETAIL_PATH = "/recipe/detail";
 const RECIPE_ALL_PATH = "/recipe/all";
 
 export interface Recipe {
-  id: string;
-  name: string;
-  ingredients: string[];
-  instructions: string[];
-  // Add other recipe properties as needed
+  recipe_string: string;
 }
 
 interface RecipeModificationRequest {

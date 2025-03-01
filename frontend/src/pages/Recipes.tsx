@@ -17,10 +17,9 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChefHat, Plus } from "lucide-react";
-
+import { useGetUserRecipes } from "@/endpoints/recipe";
 interface Recipe {
-  id: string;
-  content: string;
+  recipe_string: string;
 }
 
 interface RecipeOption {
@@ -28,19 +27,6 @@ interface RecipeOption {
   title: string;
   description: string;
 }
-
-const sampleRecipes: Recipe[] = [
-  {
-    id: "1",
-    content:
-      "Mediterranean Pasta Salad\n\nIngredients:\n- 2 cups rotini pasta\n- 1 cup cherry tomatoes\n- 1/2 cup feta cheese\n- 1/4 cup olives\n- 1/4 cup red onion\n- 2 tbsp olive oil\n- 1 tbsp lemon juice\n\nInstructions:\n1. Cook pasta according to package instructions.\n2. Slice tomatoes in half and dice red onion.\n3. Mix all ingredients together in a large bowl.\n4. Drizzle with olive oil and lemon juice.\n5. Season with salt and pepper to taste.",
-  },
-  {
-    id: "2",
-    content:
-      "Vegetable Stir Fry\n\nIngredients:\n- 1 block firm tofu\n- 2 bell peppers\n- 1 cup broccoli florets\n- 1 cup snap peas\n- 2 carrots\n- 3 tbsp soy sauce\n- 1 tbsp sesame oil\n\nInstructions:\n1. Press and cube tofu, then pan fry until golden.\n2. Slice peppers and carrots thinly.\n3. Heat oil in a wok or large pan.\n4. Add vegetables and stir fry for 5-7 minutes.\n5. Add tofu and sauce, cooking for another 2 minutes.",
-  },
-];
 
 const recipeOptions: RecipeOption[] = [
   {
@@ -72,8 +58,7 @@ const recipeOptions: RecipeOption[] = [
 
 const generateRecipeFromOption = (option: RecipeOption): Recipe => {
   return {
-    id: `${Date.now()}`,
-    content: `${option.title}\n\n${option.description}\n\nIngredients:\n- Ingredient 1\n- Ingredient 2\n- Ingredient 3\n- Ingredient 4\n- Ingredient 5\n\nInstructions:\n1. Step one of the recipe instructions.\n2. Step two with more details about cooking.\n3. Step three with additional information.\n4. Final step with serving suggestions.`,
+    recipe_string: `${option.title}\n\n${option.description}\n\nIngredients:\n- Ingredient 1\n- Ingredient 2\n- Ingredient 3\n- Ingredient 4\n- Ingredient 5\n\nInstructions:\n1. Step one of the recipe instructions.\n2. Step two with more details about cooking.\n3. Step three with additional information.\n4. Final step with serving suggestions.`,
   };
 };
 
@@ -144,11 +129,11 @@ function ViewRecipeDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
-          <DialogTitle>{recipe.content.split("\n")[0]}</DialogTitle>
+          <DialogTitle>{recipe.recipe_string.split("\n")[0]}</DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[500px] pr-4">
           <div className="whitespace-pre-line">
-            {recipe.content.split("\n").slice(1).join("\n")}
+            {recipe.recipe_string.split("\n").slice(1).join("\n")}
           </div>
         </ScrollArea>
         <DialogFooter>
@@ -170,7 +155,7 @@ function RecipeCard({
   index: number;
   onViewRecipe: (recipe: Recipe) => void;
 }) {
-  const title = recipe.content.split("\n")[0] || `Recipe #${index + 1}`;
+  const title = recipe.recipe_string.split("\n")[0] || `Recipe #${index + 1}`;
 
   return (
     <Card className="overflow-hidden flex flex-col">
@@ -180,7 +165,7 @@ function RecipeCard({
 
       <CardContent className="pb-2 flex-grow">
         <p className="line-clamp-3 text-sm text-muted-foreground">
-          {recipe.content.split("\n").slice(1).join(" ")}
+          {recipe.recipe_string.split("\n").slice(1).join(" ")}
         </p>
       </CardContent>
 
@@ -198,25 +183,15 @@ function RecipeCard({
 }
 
 export default function RecipesPage() {
-  const [recipes, setRecipes] = useState<Recipe[]>(sampleRecipes);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
-  // This is where we would use the useRecipeList hook in the future
-  // Uncomment this when the hook is ready and remove the useState above
-  /*
-  const { 
-    recipes, 
-    isLoading, 
-    isError, 
-    addRecipe: addRecipeToList 
-  } = useRecipeList();
-  */
+  const { data: recipes } = useGetUserRecipes(); // isLoading would be nice
 
   const handleAddRecipe = (recipe: Recipe) => {
-    setRecipes([...recipes, recipe]);
     // When using the hook, we would call this instead:
+    console.log("Adding recipe", recipe);
     // addRecipeToList(recipe);
   };
 
@@ -246,9 +221,9 @@ export default function RecipesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {recipes.map((recipe, index) => (
+        {recipes?.map((recipe, index) => (
           <RecipeCard
-            key={recipe.id}
+            key={index}
             recipe={recipe}
             index={index}
             onViewRecipe={handleViewRecipe}
@@ -256,7 +231,7 @@ export default function RecipesPage() {
         ))}
       </div>
 
-      {recipes.length === 0 && (
+      {recipes?.length === 0 && (
         <div className="text-center py-16 bg-muted/30 rounded-md">
           <ChefHat className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium">No recipes yet</h3>
