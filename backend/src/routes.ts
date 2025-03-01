@@ -324,7 +324,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
   // save recipe
 
   // route to get more specifics on recipe
-  app.get("/recipe/detail", async (req: JWTRequest, res) => {
+  app.post("/recipe/detail", async (req: JWTRequest, res) => {
     const user_id = req.auth?.userId;
     const recipe = req.body.recipe;
     try {

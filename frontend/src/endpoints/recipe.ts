@@ -15,7 +15,7 @@ interface RecipeModificationRequest {
 }
 
 interface DetailedRecipeRequest {
-  recipe: Recipe;
+  recipe: string;
 }
 
 interface SaveRecipeRequest {
@@ -69,8 +69,8 @@ export function useCheckAndModifyRecipe() {
 }
 
 // Get detailed recipe information
-async function getDetailedRecipe(data: DetailedRecipeRequest): Promise<Recipe> {
-  const response = await api.get(RECIPE_DETAIL_PATH, { data });
+async function getDetailedRecipe(data: DetailedRecipeRequest): Promise<string> {
+  const response = await api.post(RECIPE_DETAIL_PATH, { recipe: data.recipe });
   return response.data;
 }
 
