@@ -23,6 +23,28 @@ basil if available.
 
 `;
 
+const sampleDetailedRecipeResponse = `
+Beef Stir-Fry Recipe:
+
+Ingredients:
+- Beef Strips: 500g
+- Broccoli: 300g
+- Carrots: 200g
+- Bell Peppers: 300g
+- Soy Sauce: 50ml
+
+Directions:
+1. Heat a skillet over high heat.
+2. Add 500g of beef strips to the hot skillet and stir-fry until browned and cooked through.
+3. Remove the beef from the skillet and set aside.
+4. In the same skillet, add 200g of sliced carrots and cook for 2-3 minutes until slightly tender.
+5. Add 300g of broccoli florets and 300g of sliced bell peppers to the skillet. Stir-fry for another 3-4 minutes until the vegetables are tender-crisp.
+6. Return the cooked beef to the skillet.
+7. Pour 50ml of soy sauce over the beef and vegetables. Stir well to combine and heat through.
+8. Serve the beef stir-fry over cooked rice.
+
+`;
+
 export class GptService {
   private foodItems: FoodItems;
   private recipes: Recipes;
@@ -105,7 +127,8 @@ export class GptService {
     This is the recipe that I want to make: ${recipe}
     Given the quantities of food that I have in my fridge, give me back this recipe
     but with more detailed instructions and specific quantities for each food.
-    Do not say anything before or after giving the recipe
+    Do not say anything before or after giving the recipe. 
+    Here is a perfect sample response: ${sampleDetailedRecipeResponse}
     `;
     const response = await this.generateQuery(queryString);
     console.log(response);

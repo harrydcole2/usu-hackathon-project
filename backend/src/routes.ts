@@ -366,4 +366,29 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       res.status(500).send("Server Error");
     }
   });
+
+  // test to generate detailed recipe and then save it
+  // want to see how text is stored in the database
+  app.post("/test/recipe", async (req: JWTRequest, res) => {
+    const user_id = req.auth?.userId;
+    const recipes = req.body.recipes;
+    console.log("Here are the recipes: ", recipes);
+    for (const recipe of recipes) {
+      try {
+        const detailedRecipe = await dependencies.gptService.getDetailedRecipe(
+          user_id,
+          recipe
+        );
+        console.log(detailedRecipe);
+        const queryResponse = await dependencies.recipes.insertRecipe(
+          user_id,
+          detailedRecipe!
+        );
+        // res.send(queryResponse);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+      }
+    }
+  });
 }
