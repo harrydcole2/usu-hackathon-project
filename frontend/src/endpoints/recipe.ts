@@ -1,102 +1,48 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../utils/api";
 
-// Define the Recipe type
-export interface Recipe {
+const RECIPE_PATH = "/recipe";
+
+interface Recipe {
   id: string;
-  title: string;
+  name: string;
   ingredients: string[];
-  instructions: string;
-  preparationTime: number;
-  cookingTime: number;
-  servings: number;
-  imageUrl?: string;
-  tags?: string[];
-  createdAt: string;
-  updatedAt: string;
+  instructions: string[];
+  // Add other recipe properties as needed
 }
 
-export type RecipeInput = Omit<Recipe, "id" | "createdAt" | "updatedAt">;
+interface RecipeModificationRequest {
+  recipe_id: string;
+}
 
-const RECIPES_PATH = "/recipes";
-
-async function fetchRecipes(): Promise<Recipe[]> {
-  const response = await api.get(RECIPES_PATH);
+// Get recipe recommendations based on user's fridge
+async function getRecipes(): Promise<Recipe[]> {
+  const response = await api.get(RECIPE_PATH);
   return response.data;
 }
 
-async function fetchRecipeById(id: string): Promise<Recipe> {
-  const response = await api.get(`${RECIPES_PATH}/${id}`);
-  return response.data;
-}
-
-async function createRecipe(recipe: RecipeInput): Promise<Recipe> {
-  const response = await api.post(RECIPES_PATH, recipe);
-  return response.data;
-}
-
-async function updateRecipe({
-  id,
-  recipe,
-}: {
-  id: string;
-  recipe: Partial<RecipeInput>;
-}): Promise<Recipe> {
-  const response = await api.put(`${RECIPES_PATH}/${id}`, recipe);
-  return response.data;
-}
-
-async function deleteRecipe(id: string): Promise<void> {
-  await api.delete(`${RECIPES_PATH}/${id}`);
-}
-
-export function useRecipes() {
+export function useGetRecipes() {
   return useQuery({
     queryKey: ["recipes"],
-    queryFn: fetchRecipes,
+    queryFn: getRecipes,
   });
 }
 
-export function useRecipe(id: string) {
-  return useQuery({
-    queryKey: ["recipe", id],
-    queryFn: () => fetchRecipeById(id),
-    enabled: !!id,
-  });
+// Check and modify a recipe based on available ingredients
+async function checkAndModifyRecipe(
+  data: RecipeModificationRequest
+): Promise<Recipe> {
+  const response = await api.put(RECIPE_PATH, data);
+  return response.data;
 }
 
-export function useCreateRecipe() {
+export function useCheckAndModifyRecipe() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createRecipe,
-    onSuccess: (newRecipe) => {
+    mutationFn: checkAndModifyRecipe,
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
-      queryClient.setQueryData(["recipe", newRecipe.id], newRecipe);
-    },
-  });
-}
-
-export function useUpdateRecipe() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: updateRecipe,
-    onSuccess: (updatedRecipe) => {
-      queryClient.invalidateQueries({ queryKey: ["recipes"] });
-      queryClient.invalidateQueries({ queryKey: ["recipe", updatedRecipe.id] });
-    },
-  });
-}
-
-export function useDeleteRecipe() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteRecipe,
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["recipes"] });
-      queryClient.removeQueries({ queryKey: ["recipe", variables] });
     },
   });
 }
