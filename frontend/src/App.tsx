@@ -4,6 +4,7 @@ import Pantry from "./pages/Pantry";
 import Layout from "./pages/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Help from "./pages/Help";
 import { Button } from "./components/ui/button";
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
             </div>
           }
         />
-        <Route path="/help" element={<div>Help Page (Coming Soon)</div>} />
+        <Route path="/help" element={<Help/>} />
       </Route>
     </Routes>
   );
