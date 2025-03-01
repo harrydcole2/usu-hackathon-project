@@ -7,6 +7,33 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
     res.send("Hello World!");
   });
 
+  // Food Items Endpoints
+
+  app.get("/foodItems/all", async (req: JWTRequest, res) => {
+    try {
+      const targetUser = req.auth?.userId
+
+      const foodResult = await dependencies.foodItems.getUserFridge(targetUser)
+      console.log(foodResult)
+
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  });
+
+  // Expecting body to be like { foodItem: { itemName, }}
+  app.post("/foodItems", async (req: JWTRequest, res) => {
+    try {
+      const newFoodItem = req.body?.foodItem
+
+    } catch (error) {
+      console.error(error)
+      res.status(500)
+    }
+  })
+
   // Authentication Routes
 
   app.post("/login", async (req, res) => {
@@ -51,7 +78,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
   app.post("/newUser", async (req: JWTRequest, res) => {
     try {
-      console.log(req.body)
+      console.log(req.body);
       const username = req.body?.username;
       const password = req.body?.password;
 
