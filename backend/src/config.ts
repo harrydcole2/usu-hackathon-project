@@ -1,9 +1,9 @@
 import postgres from 'postgres'
 import Users from './db/users';
-import AuthService from './services/authService';
+import UserAuthService from './services/userAuthService';
 
 export interface Dependencies {
-  authService: AuthService
+  authService: UserAuthService
 }
 
 
@@ -14,8 +14,7 @@ export default class Config {
 
     const users = new Users(sql)
 
-    const authService = new AuthService(users)
-
+    const authService = new UserAuthService(users)
 
     return {
       authService
