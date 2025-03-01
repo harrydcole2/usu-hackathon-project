@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 // Define the User type
 export interface User {
@@ -38,8 +39,9 @@ async function deleteUser(): Promise<void> {
   await api.delete(USERS_PATH);
 }
 
-// React Query hooks
 export function useLogin() {
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: ({
       username,
@@ -48,6 +50,10 @@ export function useLogin() {
       username: string;
       password: string;
     }) => loginUser(username, password),
+    onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
+      navigate("/pantry");
+    },
   });
 }
 
