@@ -195,7 +195,7 @@ function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <h3 className="text-xl font-bold mb-4 flex items-center">
-                <Refrigerator className="mr-2 h-5 w-5" /> The Fridge AI
+                <Refrigerator className="mr-2 h-5 w-5" /> The Pantry AI
               </h3>
               <p className="text-gray-300">
                 Making food management smarter and more sustainable.
@@ -243,7 +243,7 @@ function Home() {
             </div>
           </div>
           <div className="pt-4 border-t border-gray-700 text-center">
-            <p>© 2025 The Fridge AI. All rights reserved.</p>
+            <p>© 2025 The Pantry AI. All rights reserved.</p>
           </div>
         </div>
       </footer>
