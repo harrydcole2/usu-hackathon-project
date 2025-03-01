@@ -19,7 +19,7 @@ export default class Users {
   public async getUser(username: string) {
     try {
       const result = await this.sql`
-        SELECT username, password_hash, first_name, last_name
+        SELECT id, username, password_hash, first_name, last_name
         FROM users
         WHERE users.username = ${username}
       `;
@@ -75,6 +75,8 @@ export default class Users {
 
   // Update password by ID
   public async updatePassword(id: number, new_hash: string) {
+    console.log(id, new_hash)
+
     try {
       const result = await this.sql`
         UPDATE users
