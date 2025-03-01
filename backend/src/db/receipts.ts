@@ -4,7 +4,7 @@ export interface receiptResult {
   id: number;
   user_id: number;
   name: string;
-  data: Date;
+  date: string;
 }
 
 export default class Receipts {
@@ -26,7 +26,7 @@ export default class Receipts {
     }
   }
 
-  public async getReceiptByUser(user_id: number) {
+  public async getReceiptByUser(user_id: number): Promise<receiptResult[]> {
     try {
       const results = await this.sql<receiptResult[]>`
       SELECT * FROM receipts
@@ -43,7 +43,7 @@ export default class Receipts {
     try {
       const results = await this.sql<receiptResult[]>`
       SELECT * FROM receipts
-      WHERE receipt.id = ${receipt_id}
+      WHERE receipts.id = ${receipt_id}
       `;
       return results[0] as receiptResult;
     } catch (error) {
@@ -52,11 +52,11 @@ export default class Receipts {
     }
   }
 
-  public async deleteReceipt(receipt_id: number) {
+  public async deleteReceipt(receipt_id: number, user_id: number) {
     try {
       const result = await this.sql`
       DELETE FROM receipts
-      WHERE receipt.id = ${receipt_id}
+      WHERE receipts.id = ${receipt_id} AND receipts.user_id = ${user_id}
       `;
       return result.count > 0;
     } catch (error) {
@@ -68,7 +68,7 @@ export default class Receipts {
   public async createReceipt(name: string, date: Date, user_id: number) {
     try {
       const result = await this.sql`
-      INSERT INTO receipts (name, data, user_id)
+      INSERT INTO receipts (name, date, user_id)
       VALUES (${name}, ${date}, ${user_id})
       RETURNING *
       `;
@@ -79,27 +79,12 @@ export default class Receipts {
     }
   }
 
-  public async updateDateReceipt(receipt_id: number, new_date: Date) {
+  public async updateReceipt(receipt_id: number, new_date: Date, new_name: string, user_id: number) {
     try {
       const result = await this.sql`
         UPDATE receipts
-        SET date = ${new_date}
-        WHERE id = ${receipt_id}
-        RETURNING *
-      `;
-      return result[0] as receiptResult;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  public async updateNameReceipt(receipt_id: number, new_name: string) {
-    try {
-      const result = await this.sql`
-        UPDATE receipts
-        SET name = ${new_name}
-        WHERE id = ${receipt_id}
+        SET date = ${new_date}, name = ${new_name}
+        WHERE id = ${receipt_id} AND user_id = ${user_id}
         RETURNING *
       `;
       return result[0] as receiptResult;
