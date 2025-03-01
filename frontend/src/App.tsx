@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Pantry from "./pages/Pantry";
 import Layout from "./pages/Layout";
+import Help from "./pages/Help";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
           path="/recipes"
           element={<div>Recipes Page (Coming Soon)</div>}
         />
-        <Route path="/help" element={<div>Help Page (Coming Soon)</div>} />
+        <Route path="/help" element={<Help/>} />
       </Route>
     </Routes>
   );
