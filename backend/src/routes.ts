@@ -384,7 +384,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
           user_id,
           detailedRecipe!
         );
-        // res.send(queryResponse);
+        res.send(queryResponse);
       } catch (error) {
         console.error(error);
         res.status(500).send("Server Error");
