@@ -73,7 +73,7 @@ export default function Receipts() {
 
         <div className="p-6 bg-destructive/10 rounded-md text-destructive text-center">
           <p>
-            Error loading pantry items:{" "}
+            Error loading Recipe items:{" "}
             {error instanceof Error ? error.message : "Unknown error"}
           </p>
           <Button
@@ -111,7 +111,7 @@ export default function Receipts() {
       {(!Receipt || Receipt.receipts.length === 0) && (
         <div className="text-center py-12 bg-muted/30 rounded-md">
           <p className="text-muted-foreground">
-            Your pantry is empty. Add some items to get started.
+            Your Recipe List is empty. Add some items to get started.
           </p>
         </div>
       )}

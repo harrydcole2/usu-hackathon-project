@@ -3,11 +3,13 @@ import { Plus } from "lucide-react";
 import { PantryRow } from "@/components/pantryRow";
 import { useGetUserFridge, useRemoveFoodItem } from "@/endpoints/foodItem";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "@/components/ui/modal";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Pantry() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   
   const { data: pantryItems, isLoading, isError, error } = useGetUserFridge();
   const removeFoodItem = useRemoveFoodItem();
@@ -126,7 +128,7 @@ export default function Pantry() {
               <Plus size={18} />
               Add Item
             </Button>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2" onClick={() => navigate("/receipts")}>
               <Plus size={18} />
               Add Receipt
             </Button>
