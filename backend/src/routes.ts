@@ -3,10 +3,6 @@ import { Express } from "express";
 import { Request as JWTRequest } from "express-jwt";
 
 export default function setupRoutes(app: Express, dependencies: Dependencies) {
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
-  });
-
   // Food Items Endpoints
 
   app.get("/foodItems/all", async (req: JWTRequest, res) => {
@@ -121,6 +117,44 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       res.status(500).send("Server Error");
     }
   });
+
+  // Receipt Routes
+
+  app.get("/receipts", async (req: JWTRequest, res) => {
+    try {
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  })
+
+  app.post('/receipts', async (req: JWTRequest, res) => {
+    try {
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  })
+
+  app.put('/receipts', async (req: JWTRequest, res) => {
+    try {
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  })
+
+  app.delete('/receipts', async (req: JWTRequest, res) => {
+    try {
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  })
 
   // Authentication Routes
 
