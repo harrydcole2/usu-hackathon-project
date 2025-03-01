@@ -94,7 +94,7 @@ function AddRecipeDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] mx-auto my-auto">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add a Recipe</DialogTitle>
           <DialogDescription>
@@ -142,11 +142,9 @@ function ViewRecipeDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
-          <DialogTitle>
-            {recipe.content.split("\n")[0]} {/* First line as title */}
-          </DialogTitle>
+          <DialogTitle>{recipe.content.split("\n")[0]}</DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[500px] pr-4">
           <div className="whitespace-pre-line">
@@ -205,7 +203,8 @@ export default function RecipesPage() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
-  // TODO: This is where we would use the useRecipeList hook in the future uncomment this when the hook is ready and remove the useState above
+  // This is where we would use the useRecipeList hook in the future
+  // Uncomment this when the hook is ready and remove the useState above
   /*
   const { 
     recipes, 
