@@ -38,7 +38,7 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen bg-background">
-      <div className="w-64 bg-sidebar text-sidebar-foreground p-4 flex flex-col">
+      <div className="w-64 bg-sidebar text-sidebar-foreground p-4 flex flex-col shadow-lg">
         <div className="flex flex-col items-center justify-center py-6 border-b border-sidebar-border/30">
           <Avatar className="h-16 w-16 mb-2 ring-2 ring-sidebar-ring/30">
             <AvatarImage src="/avatar-placeholder.png" alt="User avatar" />
