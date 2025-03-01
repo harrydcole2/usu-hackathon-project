@@ -2,6 +2,8 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Apple, Carrot, Leaf, Banana, Grape, Citrus, Egg, Cookie, Milk} from "lucide-react"
 import {
   Card,
   CardContent,
@@ -34,6 +36,23 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
   const { mutate: login, isPending } = useLogin();
+  const produceItems = [
+    { name: "Apple", icon: Apple, color: "text-red-500" },
+    { name: "Carrot", icon: Carrot, color: "text-orange-500" },
+    { name: "Lettuce", icon: Leaf, color: "text-green-500" },
+    { name: "Banana", icon: Banana, color: "text-yellow-500" },
+    { name: "Grape", icon: Grape, color: "text-purple-500" },
+    { name: "Orange", icon: Citrus, color: "text-orange-500" },
+    { name: "Milk", icon: Milk, color: "text-blue-500" },
+    { name: "Egg", icon: Egg, color: "text-yellow-500" },
+    { name: "Cookie", icon: Cookie, color: "text-[#d9be91]" },
+  ]
+  
+  const randomPosition = () => ({
+    x: Math.random() * window.innerWidth - window.innerWidth / 2,
+    y: Math.random() * window.innerHeight - window.innerHeight / 2
+  });
+  
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -48,11 +67,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-b from-[#C9D6EA] to-[#E8F7EE] relative">
+      <motion.div
+        className="absolute top-8 left-1/2 transform -translate-x-1/2"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center gap-2 bg-white/90 px-4 py-2 rounded-full shadow-md">
+          <Carrot className="text-orange-500" />
+          <span className="font-bold text-lg text-gray-800">Pantry AI</span>
+        </div>
+      </motion.div>
+
+
+      <Card className="w-full max-w-md shadow-xl z-10">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            Login to Pantry Inventory
+            Login to Pantry
           </CardTitle>
           <CardDescription className="text-center">
             Enter your credentials to access your pantry
@@ -106,6 +138,48 @@ const Login: React.FC = () => {
           </p>
         </CardFooter>
       </Card>
+
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {produceItems.map((item, index) => (
+          <motion.div
+            key={index}
+            className="absolute"
+            initial={{
+              x: Math.random() * window.innerWidth - 100,
+              y: Math.random() * window.innerHeight - 100,
+              opacity: 0.7,
+              scale: 0.8,
+            }}
+            animate={{
+              x: [
+                Math.random() * window.innerWidth - 100,
+                Math.random() * window.innerWidth - 100,
+                Math.random() * window.innerWidth - 100,
+              ],
+              y: [
+                Math.random() * window.innerHeight - 100,
+                Math.random() * window.innerHeight - 100,
+                Math.random() * window.innerHeight - 100,
+              ],
+              rotate: [0, 10, -10, 5, 0],
+              opacity: [0.7, 0.9, 0.7],
+            }}
+            transition={{
+              repeat: Number.POSITIVE_INFINITY,
+              duration: 15 + Math.random() * 10,
+              ease: "easeInOut",
+              times: [0, 0.5, 1],
+            }}
+          >
+            <div className={`${item.color} bg-white/80 p-3 rounded-full shadow-md`}>
+              <item.icon size={48} />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+
     </div>
   );
 };
