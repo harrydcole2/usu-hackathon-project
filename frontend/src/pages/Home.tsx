@@ -16,10 +16,9 @@ function Home() {
   });
 
   const handle_pantry = () => {
-    console.log('button clicked');
+    console.log("button clicked");
     navigate("/pantry"); // Navigate to the provided path
   };
-
 
   return (
   <div className="flex flex-col min-h-screen overflow-hidden bg-gradient-to-b from-[#C9D6EA] to-[#E8F7EE] relative">

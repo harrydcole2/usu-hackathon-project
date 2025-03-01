@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from 'cors';
 import setupRoutes from "./routes";
 import Config from "./config";
 import { expressjwt } from "express-jwt";
@@ -9,8 +10,6 @@ dotenv.config();
 
 const app = express();
 const port = process.env.SERVER_PORT;
-
-
 
 const config = new Config();
 
@@ -25,6 +24,8 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
+app.use(cors())
 
 // Install Routes to the Express system
 setupRoutes(app, dependencies);
