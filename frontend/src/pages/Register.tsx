@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Apple, Carrot, Leaf, Banana, Grape, Citrus, Egg, Cookie, Milk} from "lucide-react"
 import {
   Card,
   CardContent,
@@ -43,7 +45,17 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 const Register: React.FC = () => {
   const { mutate: register, isPending: registerPending } = useCreateUser();
   const { mutate: login, isPending: loginPending } = useLogin();
-
+  const produceItems = [
+    { name: "Apple", icon: Apple, color: "text-red-500" },
+    { name: "Carrot", icon: Carrot, color: "text-orange-500" },
+    { name: "Lettuce", icon: Leaf, color: "text-green-500" },
+    { name: "Banana", icon: Banana, color: "text-yellow-500" },
+    { name: "Grape", icon: Grape, color: "text-purple-500" },
+    { name: "Orange", icon: Citrus, color: "text-orange-500" },
+    { name: "Milk", icon: Milk, color: "text-blue-500" },
+    { name: "Egg", icon: Egg, color: "text-yellow-500" },
+    { name: "Cookie", icon: Cookie, color: "text-[#d9be91]" },
+  ]
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -66,8 +78,8 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-[#C9D6EA] to-[#E8F7EE]">
+      <Card className="w-full max-w-md z-10">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
             Create an Account
@@ -175,6 +187,46 @@ const Register: React.FC = () => {
           </p>
         </CardFooter>
       </Card>
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {produceItems.map((item, index) => (
+          <motion.div
+            key={index}
+            className="absolute"
+            initial={{
+              x: Math.random() * window.innerWidth - 100,
+              y: Math.random() * window.innerHeight - 100,
+              opacity: 0.7,
+              scale: 0.8,
+            }}
+            animate={{
+              x: [
+                Math.random() * window.innerWidth - 100,
+                Math.random() * window.innerWidth - 100,
+                Math.random() * window.innerWidth - 100,
+              ],
+              y: [
+                Math.random() * window.innerHeight - 100,
+                Math.random() * window.innerHeight - 100,
+                Math.random() * window.innerHeight - 100,
+              ],
+              rotate: [0, 10, -10, 5, 0],
+              opacity: [0.7, 0.9, 0.7],
+            }}
+            transition={{
+              repeat: Number.POSITIVE_INFINITY,
+              duration: 15 + Math.random() * 10,
+              ease: "easeInOut",
+              times: [0, 0.5, 1],
+            }}
+          >
+            <div className={`${item.color} bg-white/80 p-3 rounded-full shadow-md`}>
+              <item.icon size={48} />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
     </div>
   );
 };

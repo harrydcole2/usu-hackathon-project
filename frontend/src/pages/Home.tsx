@@ -14,9 +14,9 @@ function Home() {
     y: Math.random() * window.innerHeight - 100
   });
 
-  const handle_pantry = () => {
+  const handle_login = () => {
     console.log("button clicked");
-    navigate("/pantry"); // Navigate to the provided path
+    navigate("/login"); // Navigate to the provided path
   };
 
   return (
@@ -25,23 +25,23 @@ function Home() {
       <div className="flex items-center space-x-3">
         <Refrigerator className="h-8 w-8 text-[#3F6566]" />
         <h1 className="text-5xl font-bold bg-gradient-to-r from-[#C9D6EA] to-[#E8F7EE] bg-clip-text text-transparent p-1.75">
-          The Fridge AI
+          The Pantry AI
         </h1>
       </div>
       <div className="flex space-x-4 text-lg">
-        <a href="/pantry" className=" text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2">
+        {/* <a href="/pantry" className=" text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2">
           <Search className="h-4 w-4" />
           Pantry
         </a>
         <a href="#" className="text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3 flex items-center gap-2">
           <ChefHat className="h-4 w-4" />
           Recipes
-        </a>
+        </a> */}
         <a href="/help" className="text-[#C9D6EA] hover:text-[#E8F7EE] transition-colors p-3">
           Help
         </a>
         <a
-          href="#"
+          href="/login"
           className="bg-gradient-to-r from-[#448C8E] to-[#15AEB4] rounded-xl p-3 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
         >
           Login
@@ -60,7 +60,7 @@ function Home() {
           </h2>
 
           <p className=" p-6 mb-8 text-xl md:text-2xl text-gray-700 leading-relaxed bg-white/80 backdrop-blur-sm rounded-2xl shadow-md ">
-            Welcome to the Fridge! We help you track food in your fridge, alert you before things expire, and generate
+            Welcome to the Pantry! We help you track your food, alert you before things expire, and generate
             meal plans to use everything efficiently. Smart food management for a sustainable kitchen.
           </p>
         <div className="flex justify-center mb-16">
@@ -68,7 +68,7 @@ function Home() {
             className="group flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-full text-xl md:text-2xl px-8 py-4 shadow-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            onClick={handle_pantry}
+            onClick={handle_login}
           >
             Get Started
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
