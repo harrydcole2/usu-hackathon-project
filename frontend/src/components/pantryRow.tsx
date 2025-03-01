@@ -27,16 +27,21 @@ export const PantryRow = ({
   const today = new Date();
 
   const daysRemaining = differenceInDays(expiryDate, today);
-  const totalDays = differenceInDays(expiryDate, purchaseDate);
-  const daysUsed = differenceInDays(today, purchaseDate);
+  const totalShelfLife = differenceInDays(expiryDate, purchaseDate);
 
   const progressPercentage = Math.max(
     0,
-    Math.min(100, (daysUsed / totalDays) * 100)
+    Math.min(100, 100 - (daysRemaining / totalShelfLife) * 100)
   );
 
-  const getProgressColor = () => {
-    return "bg-[#AA4A44]";
+  const getProgressGradient = () => {
+    if (progressPercentage < 33) {
+      return "bg-gradient-to-r from-green-500 to-green-400";
+    } else if (progressPercentage < 66) {
+      return "bg-gradient-to-r from-yellow-400 to-orange-300";
+    } else {
+      return "bg-gradient-to-r from-orange-400 to-red-500";
+    }
   };
 
   const purchaseDateFormatted = formatDistanceToNow(purchaseDate, {
@@ -73,9 +78,9 @@ export const PantryRow = ({
               <div className="text-sm text-muted-foreground">
                 {expiryDateFormatted}
               </div>
-              <div className="w-full bg-muted/30 rounded-full h-2">
+              <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
                 <div
-                  className={`h-2 rounded-full ${getProgressColor()}`}
+                  className={`h-2 rounded-full ${getProgressGradient()}`}
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>

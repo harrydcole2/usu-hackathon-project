@@ -171,11 +171,13 @@ export default function RecipesPage() {
 
   const handleAddRecipe = async (recipe: Recipe) => {
     try {
-      const detailedRecipe = await getDetailedRecipe({ recipe });
+      const detailedRecipe = await getDetailedRecipe({
+        recipe: recipe.recipe_string,
+      });
 
-      await saveRecipe({ recipe: detailedRecipe.recipe_string });
-
-      console.log("Recipe added successfully");
+      const publishedRecipe = await saveRecipe({ recipe: detailedRecipe });
+      setSelectedRecipe(publishedRecipe[0]);
+      setIsViewDialogOpen(true);
     } catch (error) {
       console.error("Error adding recipe:", error);
     }
