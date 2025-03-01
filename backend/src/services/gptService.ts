@@ -15,7 +15,10 @@ export class GptService {
     });
   }
   public async getRecipes(user_id: number) {
-    const userFridge = await this.foodItems.getUserFridge(user_id);
+    const userFridge = JSON.stringify(
+      await this.foodItems.getUserFridge(user_id)
+    );
+    console.log(userFridge);
     const queryString = `
   This is all the items that a user has in their fridge/pantry.
   Generate a few recipes based off of their items, prioritizing the items that are going to expire soon:
