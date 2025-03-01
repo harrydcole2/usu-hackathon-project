@@ -1,5 +1,14 @@
 import { Sql } from "postgres";
 
+interface FoodItem {
+  item_name: string;
+  quantity: number;
+  unit: string;
+  expiration_date: string;
+  id?: number;
+  receipt_id?: number;
+}
+
 export default class FoodItems {
   sql: Sql;
 
@@ -15,14 +24,10 @@ export default class FoodItems {
     FROM food_items
     WHERE food_items.user_id = ${user_id}
     `;
-      return result;
+      return result as unknown as FoodItem[];
     } catch (error) {
-      console.error(
-        `Failed to receive user's foodItems with id ${user_id}'s fridge`
-      );
-      throw Error(
-        `Failed to receive user's foodItems with id ${user_id}'s fridge`
-      );
+      console.error(`Failed to receive user's foodItems with id ${user_id}'s fridge`);
+      throw Error(`Failed to receive user's foodItems with id ${user_id}'s fridge`);
     }
   }
 
@@ -39,9 +44,7 @@ export default class FoodItems {
       console.error(
         `Failed to receive receipt's foodItems with id ${receipt_id}'s fridge`
       );
-      throw Error(
-        `Failed to receive receipt's foodItems with id ${receipt_id}'s fridge`
-      );
+      throw Error(`Failed to receive receipt's foodItems with id ${receipt_id}'s fridge`);
     }
   }
 
@@ -56,6 +59,40 @@ export default class FoodItems {
     } catch (error) {
       console.error(`Failed to retrieve food_item with id: ${id}`);
       throw Error(`Failed to retrieve food_item with id: ${id}`);
+    }
+  }
+
+  public async addFoodItem (item: FoodItem): Promise<void> {
+    try {
+      await this.sql`
+      INSERT INTO food_items (user_id, item_name, quantity, receipt_id, unit, expiration_date)
+      VALUES (${item.item_name}, ${item.quantity}, ${item.unit}, ${item.expiration_date})`
+    } catch (error: any) {
+      console.error(`Failed to insert new food item: ${error.message}`)
+      throw Error('Failed to Insert Food Item')
+    }
+  }
+
+  public async removeFoodItem (itemId: number) {
+    try {
+      await this.sql`
+      DELETE FROM food_items
+      WHERE id = ${itemId}`
+    } catch (error: any) {
+      console.error(`Failed to Delete food item: ${error.message}`)
+      throw Error('Failed to Delete Food Item')
+    }
+  }
+
+  public async updateFoodItem (updatedItem: FoodItem) {
+    try {
+      await this.sql`
+      UPDATE food_items
+      SET item_name = ${updatedItem.item_name}, quantity = ${updatedItem.quantity}, receipt_id = ${updatedItem.receipt_id ?? ''}, unit = ${updatedItem.unit}, expiration_date = ${updatedItem.unit}
+      WHERE id = ${updatedItem.id ?? ''}`
+    } catch (error: any) {
+      console.error(`Failed to Update food item: ${error.message}`)
+      throw Error('Failed to Update Food Item')
     }
   }
 }

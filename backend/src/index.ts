@@ -10,8 +10,6 @@ dotenv.config();
 const app = express();
 const port = process.env.SERVER_PORT;
 
-
-
 const config = new Config();
 
 const dependencies = config.setupDependencies();

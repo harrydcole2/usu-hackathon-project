@@ -10,12 +10,12 @@ export default class UserAuthService {
   }
 
   async login (username: string, password: string): Promise<string> {
-    const userData = { id: '', username: '', passwordHash: '' } // this.users.getUser(username)
+    const userData = await this.users.getUser(username)
     if (userData == null) {
       throw new Error('User Not Found')
     }
 
-    if (!(await this.verifyPassword(userData.passwordHash, password))) {
+    if (!(await this.verifyPassword(userData.password_hash, password))) {
       throw new Error('Password Incorrect')
     }
 
