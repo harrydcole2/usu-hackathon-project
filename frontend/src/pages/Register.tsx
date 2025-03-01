@@ -1,4 +1,3 @@
-// Register.tsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useCreateUser } from "@/endpoints/user";
+import { useCreateUser, useLogin } from "@/endpoints/user";
 import { Link } from "react-router-dom";
 
 const registerSchema = z
@@ -39,11 +38,11 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-// Infer the type from the schema
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Register: React.FC = () => {
-  const { mutate: register, isPending } = useCreateUser();
+  const { mutate: register, isPending: registerPending } = useCreateUser();
+  const { mutate: login, isPending: loginPending } = useLogin();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -59,7 +58,11 @@ const Register: React.FC = () => {
   const onSubmit = (data: RegisterFormValues) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...registerData } = data;
-    register(registerData);
+    register(registerData, {
+      onSuccess: () => {
+        login({ username: data.username, password: data.password });
+      },
+    });
   };
 
   return (
@@ -151,8 +154,14 @@ const Register: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Creating account..." : "Register"}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={registerPending || loginPending}
+              >
+                {registerPending || loginPending
+                  ? "Creating account..."
+                  : "Register"}
               </Button>
             </form>
           </Form>

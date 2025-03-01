@@ -36,12 +36,12 @@ export default class Users {
   }
 
   // Insert user data (username, password_hash)
-  public async insertUser(username: string, password_hash: string) {
+  public async insertUser(username: string, password_hash: string, firstName: string, lastName: string) {
     try {
       const users = await this.sql`
         INSERT INTO users 
-          (username, password_hash)
-        VALUES (${username}, ${password_hash})
+          (username, password_hash, first_name, last_name)
+        VALUES (${username}, ${password_hash}, ${firstName}, ${lastName})
         RETURNING username, password_hash
       `;
 
@@ -79,7 +79,7 @@ export default class Users {
       const result = await this.sql`
         UPDATE users
         SET password_hash = ${new_hash}
-        WHERE users.id = ${id}
+        WHERE id = ${id}
         RETURNING id, username, password_hash
       `;
 

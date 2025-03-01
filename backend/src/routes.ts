@@ -36,6 +36,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
       await dependencies.foodItems.addFoodItem(newFoodItem)
 
+      res.send('Food Item Successfully Added')
     } catch (error) {
       console.error(error)
       res.status(500).send("Server Error");
@@ -55,6 +56,8 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       }
 
       await dependencies.foodItems.updateFoodItem(newFoodItem)
+
+      res.send("Food Item Successfully Updated")
     } catch (error) {
       console.error(error)
       res.status(500).send("Server Error");
@@ -67,6 +70,8 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       const targetUser = req.auth?.userId
 
       await dependencies.foodItems.removeFoodItem(Number(itemId), targetUser)
+
+      res.send("Food Item Successfully Deleted")
     } catch (error) {
       console.error(error)
       res.status(500).send("Server Error");
@@ -123,11 +128,13 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       console.log(req.body);
       const username = req.body?.username;
       const password = req.body?.password;
+      const firstName = req.body?.firstName;
+      const lastName = req.body?.lastName;
 
       if (username == null || password == null) {
         res.status(400).send("Missing Username and/or Password");
       } else {
-        await dependencies.authService.createUser(username, password);
+        await dependencies.authService.createUser(username, password, firstName, lastName);
 
         res.send("User Creation Complete");
       }
