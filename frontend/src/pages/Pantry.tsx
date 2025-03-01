@@ -2,10 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { PantryRow } from "@/components/pantryRow";
 import { useGetUserFridge, useRemoveFoodItem } from "@/endpoints/foodItem";
-// import { useState } from "react";
+import { useState, useEffect } from "react";
+import Modal from "@/components/ui/modal";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Pantry() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const { data: pantryItems, isLoading, isError, error } = useGetUserFridge();
   const removeFoodItem = useRemoveFoodItem();
   //const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -34,10 +37,17 @@ export default function Pantry() {
               Manage your pantry ingredients
             </p>
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
-            <Plus size={18} />
-            Add Item
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
+              <Plus size={18} />
+              Add Item
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
+              <Plus size={18} />
+              Add Receipt
+            </Button>
+          </div>
+          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
 
         <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground">
@@ -71,11 +81,18 @@ export default function Pantry() {
               Manage your pantry ingredients
             </p>
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
-            <Plus size={18} />
-            Add Item
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
+              <Plus size={18} />
+              Add Item
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
+              <Plus size={18} />
+              Add Receipt
+            </Button>
+          </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
         <div className="p-6 bg-destructive/10 rounded-md text-destructive text-center">
           <p>
@@ -93,7 +110,6 @@ export default function Pantry() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -105,10 +121,18 @@ export default function Pantry() {
             Manage your pantry ingredients
           </p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
-          <Plus size={18} />
-          Add Item
-        </Button>
+        <div className="flex items-center gap-2">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
+              <Plus size={18} />
+              Add Item
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
+              <Plus size={18} />
+              Add Receipt
+            </Button>
+        </div>
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
       </div>
 
       {/* Column headers */}
