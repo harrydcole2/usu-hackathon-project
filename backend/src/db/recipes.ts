@@ -9,9 +9,9 @@ export default class Recipes {
   }
 
   // get all recipes based on user
-  public getRecipes(user_id: number) {
+  public async getRecipes(user_id: number) {
     try {
-      const recipes = this.sql`
+      const recipes = await this.sql`
       SELECT recipe_string
       FROM recipes
       WHERE recipes.user_id = ${user_id}
@@ -25,9 +25,9 @@ export default class Recipes {
   }
 
   // insert recipe into database given username and recipe string
-  public insertRecipe(user_id: number, recipe: string) {
+  public async insertRecipe(user_id: number, recipe: string) {
     try {
-      const result = this.sql`
+      const result = await this.sql`
         INSERT INTO recipes (user_id, recipe)
         VALUES (${user_id}, ${recipe})
         RETURNING user_id, recipe
