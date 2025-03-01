@@ -79,7 +79,7 @@ export default class Users {
       const result = await this.sql`
         UPDATE users
         SET password_hash = ${new_hash}
-        WHERE users.id = ${id}
+        WHERE id = ${id}
         RETURNING id, username, password_hash
       `;
 
