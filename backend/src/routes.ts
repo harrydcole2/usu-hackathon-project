@@ -36,6 +36,7 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
 
       await dependencies.foodItems.addFoodItem(newFoodItem)
 
+      res.send('Food Item Successfully Added')
     } catch (error) {
       console.error(error)
       res.status(500).send("Server Error");
@@ -55,6 +56,8 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       }
 
       await dependencies.foodItems.updateFoodItem(newFoodItem)
+
+      res.send("Food Item Successfully Updated")
     } catch (error) {
       console.error(error)
       res.status(500).send("Server Error");
@@ -67,6 +70,8 @@ export default function setupRoutes(app: Express, dependencies: Dependencies) {
       const targetUser = req.auth?.userId
 
       await dependencies.foodItems.removeFoodItem(Number(itemId), targetUser)
+
+      res.send("Food Item Successfully Deleted")
     } catch (error) {
       console.error(error)
       res.status(500).send("Server Error");

@@ -37,8 +37,9 @@ export default class FoodItems {
   public async getReceiptFridge(receipt_id: number) {
     try {
       const result = await this.sql`
-    SELECT item_name, quantity, unit, expiration_date
+    SELECT food_items.id, item_name, quantity, receipt_id, unit, expiration_date, date as receipt_date
     FROM food_items
+    INNER JOIN receipts ON food_items.receipt_id = receipts.id
     WHERE receipt_id = ${receipt_id}
     `;
       return result;
@@ -53,7 +54,7 @@ export default class FoodItems {
   public async getFoodItem(id: number) {
     try {
       const result = await this.sql`
-    SELECT item_name, quantity, unit, expiration_date
+    SELECT id, item_name, quantity, unit, expiration_date
     FROM food_items
     WHERE id = ${id}
     `;
@@ -92,7 +93,7 @@ export default class FoodItems {
     try {
       await this.sql`
       UPDATE food_items
-      SET item_name = ${updatedItem.item_name}, quantity = ${updatedItem.quantity}, receipt_id = ${updatedItem.receipt_id ?? ''}, unit = ${updatedItem.unit}, expiration_date = ${updatedItem.unit}
+      SET item_name = ${updatedItem.item_name}, quantity = ${updatedItem.quantity}, receipt_id = ${updatedItem.receipt_id ?? ''}, unit = ${updatedItem.unit}, expiration_date = ${updatedItem.expiration_date}
       WHERE id = ${updatedItem.id ?? ''}`
     } catch (error: any) {
       console.error(`Failed to Update food item: ${error.message}`)
