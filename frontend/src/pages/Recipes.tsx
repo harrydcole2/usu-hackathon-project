@@ -17,7 +17,12 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChefHat, Plus } from "lucide-react";
-import { useGetRecipes, useGetUserRecipes } from "@/endpoints/recipe";
+import {
+  useGetDetailedRecipe,
+  useGetRecipes,
+  useGetUserRecipes,
+  useSaveRecipe,
+} from "@/endpoints/recipe";
 interface Recipe {
   recipe_string: string;
 }
@@ -161,10 +166,19 @@ export default function RecipesPage() {
 
   const { data: recipes } = useGetUserRecipes();
 
-  const handleAddRecipe = (recipe: Recipe) => {
-    // When using the hook, we would call this instead:
-    console.log("Adding recipe", recipe);
-    // addRecipeToList(recipe);
+  const { mutateAsync: getDetailedRecipe } = useGetDetailedRecipe();
+  const { mutateAsync: saveRecipe } = useSaveRecipe();
+
+  const handleAddRecipe = async (recipe: Recipe) => {
+    try {
+      const detailedRecipe = await getDetailedRecipe({ recipe });
+
+      await saveRecipe({ recipe: detailedRecipe.recipe_string });
+
+      console.log("Recipe added successfully");
+    } catch (error) {
+      console.error("Error adding recipe:", error);
+    }
   };
 
   const handleViewRecipe = (recipe: Recipe) => {
