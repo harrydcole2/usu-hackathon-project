@@ -38,4 +38,19 @@ export default class Recipes {
       throw new Error("Error inserting recipe into db");
     }
   }
+
+  public async getRecipe(recipe_id: number) {
+    try {
+      const recipe = await this.sql`
+      SELECT recipe_string
+      FROM recipes
+      WHERE recipe_id = ${recipe_id}
+      `;
+
+      return recipe[0];
+    } catch (error) {
+      console.error("Error retrieving recipes");
+      throw new Error("Failes to get recipes");
+    }
+  }
 }

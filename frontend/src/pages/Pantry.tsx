@@ -1,64 +1,91 @@
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
+import { PantryRow } from "@/components/pantryRow";
 
-// Define the pantry item type
+interface Receipt {
+  id: string;
+  date: string;
+}
+
 interface PantryItem {
   id: string;
-  title: string;
-  description: string;
+  user_id: string;
+  item_name: string;
   quantity: number;
+  receipt_id: string;
   unit: string;
-  cost: number;
+  expiration_date: string;
+  receipt: Receipt;
 }
 
 export default function Pantry() {
-  // Sample data
+  // Sample data matching your schema
   const [pantryItems, setPantryItems] = useState<PantryItem[]>([
     {
       id: "1",
-      title: "Organic Brown Rice",
-      description: "Whole grain rice for healthy meals",
+      user_id: "user123",
+      item_name: "Organic Brown Rice",
       quantity: 5,
+      receipt_id: "receipt1",
       unit: "lbs",
-      cost: 12.99,
+      expiration_date: "2025-05-15T00:00:00Z",
+      receipt: {
+        id: "receipt1",
+        date: "2025-01-15T00:00:00Z",
+      },
     },
     {
       id: "2",
-      title: "Extra Virgin Olive Oil",
-      description: "Cold-pressed premium olive oil",
+      user_id: "user123",
+      item_name: "Extra Virgin Olive Oil",
       quantity: 2,
+      receipt_id: "receipt2",
       unit: "bottles",
-      cost: 18.5,
+      expiration_date: "2025-08-10T00:00:00Z",
+      receipt: {
+        id: "receipt2",
+        date: "2025-02-10T00:00:00Z",
+      },
     },
     {
       id: "3",
-      title: "Black Beans",
-      description: "Canned organic black beans",
+      user_id: "user123",
+      item_name: "Black Beans",
       quantity: 8,
+      receipt_id: "receipt3",
       unit: "cans",
-      cost: 1.99,
+      expiration_date: "2025-03-15T00:00:00Z", // Soon to expire
+      receipt: {
+        id: "receipt3",
+        date: "2024-09-15T00:00:00Z",
+      },
     },
     {
       id: "4",
-      title: "Almond Flour",
-      description: "Gluten-free baking essential",
+      user_id: "user123",
+      item_name: "Almond Flour",
       quantity: 1,
+      receipt_id: "receipt4",
       unit: "bag",
-      cost: 9.75,
+      expiration_date: "2024-03-01T00:00:00Z", // Already expired
+      receipt: {
+        id: "receipt4",
+        date: "2024-12-01T00:00:00Z",
+      },
     },
   ]);
 
-  console.log(pantryItems, typeof setPantryItems); // TODO: Remove
+  // Handler functions
+  const handleEdit = (id: string) => {
+    console.log(`Editing item with ID: ${id}`);
+    // Implement edit functionality
+  };
+
+  const handleDelete = (id: string) => {
+    console.log(`Deleting item with ID: ${id}`);
+    setPantryItems(pantryItems.filter((item) => item.id !== id));
+  };
 
   return (
     <div className="space-y-6">
@@ -77,45 +104,23 @@ export default function Pantry() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Column headers */}
+      <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground">
+        <div className="col-span-3">Item</div>
+        <div className="col-span-2 text-center">Quantity</div>
+        <div className="col-span-2">Purchase Date</div>
+        <div className="col-span-3">Expiration Status</div>
+        <div className="col-span-2 text-right">Actions</div>
+      </div>
+
+      <div className="space-y-3">
         {pantryItems.map((item) => (
-          <Card key={item.id} className="overflow-hidden border-border">
-            <CardHeader className="pb-2">
-              <div className="flex justify-between">
-                <CardTitle className="text-primary">{item.title}</CardTitle>
-                <Badge
-                  variant="outline"
-                  className="bg-secondary/30 text-secondary-foreground border-secondary"
-                >
-                  {item.quantity} {item.unit}
-                </Badge>
-              </div>
-              <CardDescription>{item.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xl font-semibold">
-                ${item.cost.toFixed(2)}
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-end gap-2 bg-muted/10 py-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-primary/30 text-primary hover:bg-primary/10"
-              >
-                <Edit size={16} className="mr-1" />
-                Edit
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 size={16} className="mr-1" />
-                Delete
-              </Button>
-            </CardFooter>
-          </Card>
+          <PantryRow
+            key={item.id}
+            {...item}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         ))}
       </div>
     </div>
