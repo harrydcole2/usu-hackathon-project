@@ -1,6 +1,6 @@
 import { Sql } from "postgres";
 
-interface FoodItem {
+export interface FoodItem {
   item_name: string;
   quantity: number;
   unit: string;
