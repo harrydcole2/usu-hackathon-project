@@ -20,6 +20,7 @@ export default class Users {
 
     const user = result[0];
     console.log("This is the user we are returning in getuser: ", user);
+    return user;
   }
 
   // insert userData // username, hashpassword
@@ -56,5 +57,7 @@ export default class Users {
     WHERE users.id = ${id}
     RETURNING id, username, password_hash
     `;
+
+    return result[0];
   }
 }
