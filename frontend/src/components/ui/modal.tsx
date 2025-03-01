@@ -24,14 +24,30 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const handleReceiptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const receiptId = Number(e.target.value); 
-    setSelectedReceipt(e.target.value);
+    const receiptId = e.target.value;  // No need to convert to a number if it's already a string
   
-    // Find the selected receipt object
-    const selectedReceiptObj = receipts?.receipts.find(receipt => receipt.id === receiptId);
-  
+    console.log("Selected receipt ID:", receiptId);
+    
+    setSelectedReceipt(receiptId);
+    
+    // Log the receipts data
+    console.log("Receipts data:", receipts);
+    
+    // Log the receipts array
+    console.log("Receipts array:", receipts?.receipts);
+    
+    // Find the selected receipt
+    const selectedReceiptObj = receipts.receipts.find(receipt => {
+      console.log("Checking receipt:", receipt.id, receipt.date);
+      console.log("Type of receipt.id:", typeof receipt.id, "Type of receiptId:", typeof receiptId);
+      return receipt.id === receiptId;  // Both are strings, so no need for type conversion
+    });
+    
     if (selectedReceiptObj) {
-      setReceiptDate(new Date(selectedReceiptObj.date)); 
+      console.log("Found receipt:", selectedReceiptObj);
+      setReceiptDate(new Date(selectedReceiptObj.date));
+    } else {
+      console.error("Receipt not found for ID:", receiptId);
     }
   };
 
