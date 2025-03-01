@@ -2,7 +2,7 @@ import Users from "../db/users";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 
-export default class AuthService {
+export default class UserAuthService {
   users: Users;
 
   constructor(users: Users) {
@@ -25,17 +25,25 @@ export default class AuthService {
   async createUser(username: string, password: string): Promise<void> {
     const passwordHash = await this.hashPassword(password)
 
-    // await this.users.insertUser(username, passwordHash)
+    if (passwordHash == null) {
+      throw new Error('Password Hash Failure')
+    } 
+
+    await this.users.insertUser(username, passwordHash)
   }
 
   async removeUser(userId: number): Promise<void> {
-    // await this.users.removeUser(userId)
+    await this.users.deleteUser(userId)
   }
 
   async updatePassword (userId: number, newPassword: string): Promise<void> {
     const passwordHash = await this.hashPassword(newPassword)
 
-    // await this.users.updatePassword(userId, passwordHash)
+    if (passwordHash == null) {
+      throw new Error('Password Hash Failure')
+    } 
+
+    await this.users.updatePassword(userId, passwordHash)
   }
 
   private async hashPassword(password: string): Promise<string | undefined> {
