@@ -105,7 +105,7 @@ export default function Pantry() {
       </div>
 
       {/* Column headers */}
-      <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground">
+      <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground shadow-lg">
         <div className="col-span-3">Item</div>
         <div className="col-span-2 text-center">Quantity</div>
         <div className="col-span-2">Purchase Date</div>
